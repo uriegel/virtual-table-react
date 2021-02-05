@@ -4,6 +4,23 @@
 	--tablereact-selected-background-color: blue;
 	--tablereact-columns-separator-color:  white;
 	--tablereact-selected-background-hover-color: #0063ff;
+
+    --tablereact-scrollbar-width: 16px;
+    --tablereact-scrollbar-border-width: 1px;
+    /* --tablevue-scrollbar-button-display: none; */
+    --tablereact-scrollbar-background-color: azure;
+    --tablereact-scrollbar-border-color: gray;
+    --tablereact-scrollbar-grip-color: rgb(209, 209, 209);
+    --tablereact-scrollbar-grip-hover-color: #bbb;
+    --tablereact-scrollbar-grip-active-color: #999;
+    --tablereact-scrollbar-button-display: none;
+    --tablereact-scrollbar-button-color: #666;
+    --tablereact-scrollbar-button-hover-color: #555;
+    --tablereact-scrollbar-button-active-color: #444;
+    --tablereact-scrollbar-button-background-color: white;
+    --tablereact-scrollbar-button-hover-background-color: rgb(209, 209, 209);
+    --tablereact-scrollbar-button-active-background-color: #aaa;
+      
 }
 body {
 	height: 100vh;
@@ -40,4 +57,25 @@ td {
 
 .img {
 	width:16px;
+}
+
+.main {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+.listcontainer {
+	margin: 20px;
+	position: relative;
+	flex-grow: 1;
+	overflow: hidden;
+
+	border-color: gray;
+	border-style: solid;
+	border-width: 1px;
+}
+.list {
+	position: absolute;
+	height: 100%;
+	width: 100%;        
 }
