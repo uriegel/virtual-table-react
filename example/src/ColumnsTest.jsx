@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import 'virtual-table-react/dist/index.css'
 
 import { Columns } from 'virtual-table-react'
 

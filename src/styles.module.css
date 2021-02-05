@@ -1,9 +1,59 @@
-/* add css module styles here (optional) */
+.column {
+	overflow: hidden;
+	white-space: nowrap;
+	user-select: none;
+	text-align: left;
+	font-weight: normal;
+	text-overflow: ellipsis;
+	color: var(--tablereact-selected-color);
+	background-color: var(--tablereact-selected-background-color);        
+	border-left-color: var(--tablereact-columns-separator-color);
+	border-left-style: solid;
+	border-left-width: 1px;
+}
 
-.test {
-  margin: 2em;
-  padding: 0.5em;
-  border: 2px solid #000;
-  font-size: 2em;
-  text-align: center;
+.column:first-child {
+	border-left-width: 0px;
+}
+
+.pointerEw {
+	cursor: ew-resize;
+}
+.is-sortable {
+	background-color: var(--tablereact-selected-background-color);
+	transition: background-color 0.3s; 
+}
+.is-sortable:hover {
+	background-color: var(--tablereact-selected-background-hover-color);
+}
+.subItem {
+	display: flex;
+	flex-direction: row;
+}
+.maincol {
+	flex-grow: 1;
+	padding-left: 5px;            
+	overflow: hidden;    
+}
+.sort-ascending:before {
+	position: relative;
+	bottom: 11px;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-bottom: 6px solid var(--tablereact-selected-color);
+	content: '';
+	margin-right: 5px;
+}
+.sort-descending:before {
+	position: relative;
+	top: 10px;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 6px solid var(--tablereact-selected-color);
+	content: '';
+	margin-right: 5px;
+}
+.colimg {
+	width: 16px;
+	height: 16px;
 }
