@@ -1,6 +1,29 @@
 import React, { useState } from 'react'
 import styles from './styles.module.css'
 
+const Triangle = ({down}) => (
+	<svg className={styles.svg} viewBox="0 0 100 100" >
+		{down
+			? <path className={styles.button} d="M 80,30 50,70 20,30 Z" />
+			: <path className={styles.button} d="M 20,70 50,30 80,70 Z" / >
+		}
+    </svg>
+)
+
+export const Scrollbar = () => {
+	return (
+		<div className={styles.scrollbarContainer}>
+			<Triangle />
+			<div className={styles.grip}></div>
+			<Triangle down={true}/>
+		</div>
+	)
+	
+}
+
+
+//======================================================================================
+
 export const Columns = ({ cols }) => {
 	const [draggingReady, setDraggingReady] = useState(false)
 	
@@ -75,15 +98,15 @@ export const Columns = ({ cols }) => {
 			}
 
 			const onup = () => {
-				const getWidths = () => {
-					const ths = Array.from((this.$refs.tr).children) 
-					return ths.map(th => {
-						let width = th.style.width
-						if (!width)
-							width = (100 / this.columns.length) + '%'
-						return width
-					})
-				}
+				// const getWidths = () => {
+				// 	const ths = Array.from((this.$refs.tr).children) 
+				// 	return ths.map(th => {
+				// 		let width = th.style.width
+				// 		if (!width)
+				// 			width = (100 / this.columns.length) + '%'
+				// 		return width
+				// 	})
+				// }
 
 				window.removeEventListener('mousemove', onmove)
 				window.removeEventListener('mouseup', onup)

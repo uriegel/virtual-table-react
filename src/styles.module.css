@@ -57,3 +57,54 @@
 	width: 16px;
 	height: 16px;
 }
+
+.scrollbarContainer {
+	position: absolute;
+    height: 100%;
+    width: var(--tablereact-scrollbar-width); 
+    overflow: hidden;
+    box-sizing: border-box;
+    right: 0px;
+    border-style: solid;
+    border-color: var(--tablereact-scrollbar-border-color);
+    border-width: var(--tablereact-scrollbar-border-width);
+    user-select: none;
+    display: flex;
+    flex-direction: column;    
+}
+
+.svg {
+    display: var(--tablereact-scrollbar-button-display);
+    width: 100%;
+    background-color: var(--tablereact-scrollbar-button-background-color);
+    transition: background-color 0.3s;
+}
+.svg:hover {
+    background-color: var(--tablereact-scrollbar-button-hover-background-color);
+}
+.svg:active {
+    background-color: var(--tablereact-scrollbar-button-active-background-color);
+    cursor: default;
+}
+.button {
+    fill: var(--tablereact-scrollbar-button-color); 
+}
+.svg:hover .button {
+    fill: var(--tablereact-scrollbar-button-hover-color); 
+}
+.svg:active .button {
+    fill: var(--tablereact-scrollbar-button-active-color); 
+}
+.hidden {
+    display: none;
+}
+
+.button {
+	fill-opacity: 1; 
+	stroke:none;
+	fill: var(--tablereact-scrollbar-button-color); 
+}
+
+.grip {
+	flex-grow: 1;
+}

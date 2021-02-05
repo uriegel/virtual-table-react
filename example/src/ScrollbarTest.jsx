@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import 'virtual-table-react/dist/index.css'
 
-//import { Columns } from 'virtual-table-react'
+import { Scrollbar } from 'virtual-table-react'
 
 const itemHeight = 18
 
@@ -39,8 +39,7 @@ const App = () => {
                     <div key={item}>{item}</div> 
                 ))}
             </div>
-            {/* <scrollbar :totalCount="totalCount" :itemsPerPage="itemsPerPage" :parentHeight="height" v-model='position'> */}
-            {/* </scrollbar> */}
+            <Scrollbar /> 
             </div>
         </div>    
     )
