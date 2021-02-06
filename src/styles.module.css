@@ -57,7 +57,12 @@
 	width: 16px;
 	height: 16px;
 }
-
+.scrollbar {
+	background-color: var(--tablereact-scrollbar-background-color);
+    transition: background-color 0.5s;
+    flex-grow: 1;
+    position: relative;	
+}
 .scrollbarContainer {
 	position: absolute;
     height: 100%;
@@ -106,5 +111,13 @@
 }
 
 .grip {
-	flex-grow: 1;
+	position: absolute;
+    box-sizing: border-box;
+    border-radius: var(--tablereact-scrollbar-grip-radius);
+    background-color: var(--tablereact-scrollbar-grip-color);
+    top: 15px;
+    width: var(--tablereact-scrollbar-grip-width);
+    right: var(--tablereact-scrollbar-grip-right);
+    height: 28px;
+    transition: background-color 0.5s, width 0.5s;
 }

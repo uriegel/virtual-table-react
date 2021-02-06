@@ -14,7 +14,10 @@ export const Scrollbar = () => {
 	return (
 		<div className={styles.scrollbarContainer}>
 			<Triangle />
-			<div className={styles.grip}></div>
+			<div className={styles.scrollbar}>
+				<div className={styles.grip}>
+				</div>
+			</div>
 			<Triangle down={true}/>
 		</div>
 	)
