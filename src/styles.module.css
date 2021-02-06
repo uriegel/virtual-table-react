@@ -81,6 +81,13 @@
     flex-grow: 1;
     position: relative;	
 }
+.scrollbar:hover {
+    background-color: var(--tablereact-scrollbar-background-hover-color);
+}
+
+.scrollbar:active {
+    background-color: var(--tablereact-scrollbar-background-hover-color);
+}
 .svg {
     display: var(--tablereact-scrollbar-button-display);
     width: 100%;
@@ -121,4 +128,21 @@
     width: var(--tablereact-scrollbar-grip-width);
     right: var(--tablereact-scrollbar-grip-right);
     transition: background-color 0.5s, width 0.5s;
+}
+
+.scrollbar:hover .scrollbarGrip {
+    width: 100%;
+}
+
+.scrollbar:active .scrollbarGrip {
+    width: 100%;
+}
+
+.grip:hover {
+    background-color: var(--tablereact-scrollbar-grip-hover-color);
+}
+
+.grip:active {
+    background-color: var(--tablereact-scrollbar-grip-active-color);
+    transition: background-color 0s;
 }

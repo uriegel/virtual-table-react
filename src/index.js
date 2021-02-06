@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import styles from './styles.module.css'
 
 const Triangle = ({down}) => (
@@ -12,13 +12,15 @@ const Triangle = ({down}) => (
 
 export const Scrollbar = ({ height, itemsPerPage, count}) => {
 	const gripTop = 0
+	const scrollbarElement = useRef(null)
 
-	// TODO: scrollbarHeight is not set, ist srcollbarContainerHeight!!!
-	const getGripHeight = (scrollbarHeight, itemsPerPage, totalCount) => {
-		let gripHeight = scrollbarHeight * (itemsPerPage / totalCount)
-		if (gripHeight < 5)
-			gripHeight = 5
-		return gripHeight
+	const getGripHeight = (_, itemsPerPage, totalCount) => {
+		if (scrollbarElement.current) {
+			let gripHeight = scrollbarElement.current.clientHeight * (itemsPerPage / totalCount)
+			if (gripHeight < 5)
+				gripHeight = 5
+			return gripHeight
+		} 
 	}
 
 	const getRange = (totalCount, itemsPerPage) =>  Math.max(0, totalCount - itemsPerPage) + 1
@@ -26,7 +28,7 @@ export const Scrollbar = ({ height, itemsPerPage, count}) => {
 	return (
 		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`} >
 			<Triangle />
-			<div className={styles.scrollbar} >
+			<div ref={scrollbarElement} className={styles.scrollbar} >
 				<div className={styles.grip} style={{
 				    top: gripTop + 'px',
 					height: getGripHeight(height, itemsPerPage, count) + 'px'

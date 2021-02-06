@@ -6,7 +6,7 @@ import { Scrollbar } from 'virtual-table-react'
 const itemHeight = 18
 
 const ListBox = ({items}) => {
-    const list = useRef(null);
+    const list = useRef(null)
     const [isRunning, setIsRunning ] = useState(false)
     const [height, setHeight ] = useState(0)
     const [itemsPerPage, setItemsPerPage ] = useState(0)
