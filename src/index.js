@@ -20,7 +20,9 @@ export const Scrollbar = ({height, itemsPerPage, count}) => {
 		return gripHeight
 	}
 
-	return (
+	const getRange = (totalCount, itemsPerPage) =>  Math.max(0, totalCount - itemsPerPage) + 1
+
+	return getRange(count, itemsPerPage) > 1 && (
 		<div className={styles.scrollbarContainer}>
 			<Triangle />
 			<div className={styles.scrollbar} >
