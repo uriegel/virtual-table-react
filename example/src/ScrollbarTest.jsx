@@ -52,12 +52,14 @@ const App = () => {
 
     const getItem = index => `Item # ${index}`
 
+    const formatCount = count => "Das ist der Kaunt: " + count
+
     return (
         <div className='main'>
             <h1>Scrollbar Test</h1>
                 <div>
                     <input type="number" onChange={onInputChange} placeholder="Items count" />
-                    <div>Items: {items.count} </div>
+                    <div>Items: {formatCount(items.count)} </div>
                 </div>
             <ListBox items={items}/>
         </div>    
