@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react'
 import styles from './styles.module.css'
 
-const Triangle = ({down}) => (
-	<svg className={styles.svg} viewBox="0 0 100 100" >
+const Triangle = ({down, onClick}) => (
+	<svg className={styles.svg} viewBox="0 0 100 100" onClick={onClick} >
 		{down
 			? <path className={styles.button} d="M 80,30 50,70 20,30 Z" />
 			: <path className={styles.button} d="M 20,70 50,30 80,70 Z" / >
@@ -10,32 +10,36 @@ const Triangle = ({down}) => (
     </svg>
 )
 
-export const Scrollbar = ({ height, itemsPerPage, count}) => {
+export const Scrollbar = ({ height, itemsPerPage, count, position, positionChanged }) => {
 	const gripTop = 0
 	const scrollbarElement = useRef(null)
 
-	const getGripHeight = (_, itemsPerPage, totalCount) => {
-		if (scrollbarElement.current) {
-			let gripHeight = scrollbarElement.current.clientHeight * (itemsPerPage / totalCount)
-			if (gripHeight < 5)
-				gripHeight = 5
-			return gripHeight
-		} 
-	}
+	const getGripHeight = (_, itemsPerPage, totalCount) => 
+		scrollbarElement.current
+		? Math.max(scrollbarElement.current.clientHeight * (itemsPerPage / totalCount), 5)
+		: 0
+	
+	const getGripTop = (position, totalCount, itemsPerPage) => 
+		scrollbarElement.current
+		? (scrollbarElement.current.clientHeight - getGripHeight(0, itemsPerPage, totalCount)) * (position / (getRange(totalCount, itemsPerPage) -1))
+		: 0
 
 	const getRange = (totalCount, itemsPerPage) =>  Math.max(0, totalCount - itemsPerPage) + 1
 
+	const onUp = () => positionChanged(Math.max(position - 1, 0)) 
+	const onDown = () => positionChanged(Math.min(position + 1, getRange(count, itemsPerPage) - 1)) 
+
 	return (
 		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`} >
-			<Triangle />
+			<Triangle onClick={onUp}/>
 			<div ref={scrollbarElement} className={styles.scrollbar} >
 				<div className={styles.grip} style={{
-				    top: gripTop + 'px',
+				    top: getGripTop(position, count, itemsPerPage) + 'px',
 					height: getGripHeight(height, itemsPerPage, count) + 'px'
 				}} >
 				</div>
 			</div>
-			<Triangle down={true}/>
+			<Triangle down={true} onClick={onDown}/>
 		</div>
 	)
 	

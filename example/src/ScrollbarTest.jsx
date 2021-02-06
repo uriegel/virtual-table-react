@@ -10,7 +10,8 @@ const ListBox = ({items}) => {
     const [isRunning, setIsRunning ] = useState(false)
     const [height, setHeight ] = useState(0)
     const [itemsPerPage, setItemsPerPage ] = useState(0)
-    
+    const [position, setPosition] = useState(0)
+
     const onResize = () => {
         setHeight(list.current.clientHeight)
         setItemsPerPage(Math.floor(list.current.clientHeight / itemHeight))
@@ -30,16 +31,21 @@ const ListBox = ({items}) => {
 
         // array from startindex, (startindex + itemsperPage)|maxCount
         //jsxReturner(items[i])   
-        Array.from(Array(Math.min(itemsPerPage, items.count))
+        Array.from(Array(Math.min(itemsPerPage, items.count - position))
                 .keys())        
-                .map(i => jsxReturner(items.getItem(i)))
+                .map(i => jsxReturner(items.getItem(i + position)))
 
     return (
         <div className='listcontainer'>
             <div className="list" ref={list} >
                 {getItems()}
             </div>
-            <Scrollbar height={height} itemsPerPage={itemsPerPage} count={items.count} /> 
+            <Scrollbar 
+                height={height} 
+                itemsPerPage={itemsPerPage} 
+                count={items.count} 
+                position={position}
+                positionChanged={setPosition} /> 
         </div>
     )
 }
