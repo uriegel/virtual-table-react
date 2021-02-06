@@ -24,12 +24,22 @@ const ListBox = ({items}) => {
         setTimeout(onResize)
     }
 
+    const jsxReturner = item => {
+        return <div key={item}>{item}</div> 
+    }
+
+    const getItems = () => 
+
+        // array from startindex, (startindex + itemsperPage)|maxCount
+        //jsxReturner(items[i])   
+        Array.from(Array(Math.min(itemsPerPage, items.count))
+                .keys())        
+                .map(i => jsxReturner(items.getItem(i)))
+
     return (
         <div className='listcontainer'>
             <div className="list" ref={list} >
-                {items.map((item) => (
-                    <div key={item}>{item}</div> 
-                ))}
+                {getItems()}
             </div>
             <Scrollbar /> 
         </div>
@@ -37,15 +47,17 @@ const ListBox = ({items}) => {
 }
 
 const App = () => {
-    const [items, setItems ] = useState([])
-    const onInputChange = e => setItems(Array.from(Array(parseInt(e.target.value)).keys()).map((n, i) => `Item # ${i}`))
+    const [items, setItems ] = useState( {count: 0})
+    const onInputChange = e => setItems({count: parseInt(e.target.value) || 0, getItem})
+
+    const getItem = index => `Item # ${index}`
 
     return (
         <div className='main'>
             <h1>Scrollbar Test</h1>
                 <div>
                     <input type="number" onChange={onInputChange} placeholder="Items count" />
-                    <div>Message is: {items.length} </div>
+                    <div>Items: {items.count} </div>
                 </div>
             <ListBox items={items}/>
         </div>    
