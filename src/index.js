@@ -11,7 +11,6 @@ const Triangle = ({down, onClick}) => (
 )
 
 export const Scrollbar = ({ height, itemsPerPage, count, position, positionChanged }) => {
-	const gripTop = 0
 	const scrollbarElement = useRef(null)
 
 	const getGripHeight = (_, itemsPerPage, totalCount) => 
