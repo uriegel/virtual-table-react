@@ -28,9 +28,6 @@ const ListBox = ({items}) => {
     }
 
     const getItems = () => 
-
-        // array from startindex, (startindex + itemsperPage)|maxCount
-        //jsxReturner(items[i])   
         Array.from(Array(Math.min(itemsPerPage, items.count - position))
                 .keys())        
                 .map(i => jsxReturner(items.getItem(i + position)))

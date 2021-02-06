@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react'
 import styles from './styles.module.css'
 
-const Triangle = ({down, onClick}) => (
-	<svg className={styles.svg} viewBox="0 0 100 100" onClick={onClick} >
+const Triangle = ({down, onClick, onMouseUp}) => (
+	<svg className={styles.svg} viewBox="0 0 100 100" onMouseDown={onClick} onMouseUp={onMouseUp} >
 		{down
 			? <path className={styles.button} d="M 80,30 50,70 20,30 Z" />
 			: <path className={styles.button} d="M 20,70 50,30 80,70 Z" / >
@@ -12,6 +12,8 @@ const Triangle = ({down, onClick}) => (
 
 export const Scrollbar = ({ height, itemsPerPage, count, position, positionChanged }) => {
 	const scrollbarElement = useRef(null)
+	const [timeout, stTimeout] = useState(0)
+	const [interval, stInterval] = useState(0)
 
 	const getGripHeight = (_, itemsPerPage, totalCount) => 
 		scrollbarElement.current
@@ -25,12 +27,30 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 
 	const getRange = (totalCount, itemsPerPage) =>  Math.max(0, totalCount - itemsPerPage) + 1
 
-	const onUp = () => positionChanged(Math.max(position - 1, 0)) 
-	const onDown = () => positionChanged(Math.min(position + 1, getRange(count, itemsPerPage) - 1)) 
+	const onUp = () => {
+		let newPosition = position
+		const up = () => positionChanged(Math.max(--newPosition, 0))
+		up()
+		stTimeout(setTimeout(() => stInterval(setInterval(() => up(), 50)), 600))
+	}
+
+	const onDown = () => {
+		let newPosition = position
+		const down = () => positionChanged(Math.min(++newPosition, getRange(count, itemsPerPage) - 1)) 
+		down()
+		stTimeout(setTimeout(() => stInterval(setInterval(() => down(), 50)), 600))
+	}
+
+	const onMouseUp = () => {
+		clearTimeout(timeout)
+		clearInterval(interval)
+		setTimeout(0)
+		setInterval(0)
+	}
 
 	return (
 		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`} >
-			<Triangle onClick={onUp}/>
+			<Triangle onClick={onUp} onMouseUp={onMouseUp} />
 			<div ref={scrollbarElement} className={styles.scrollbar} >
 				<div className={styles.grip} style={{
 				    top: getGripTop(position, count, itemsPerPage) + 'px',
@@ -38,7 +58,7 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 				}} >
 				</div>
 			</div>
-			<Triangle down={true} onClick={onDown}/>
+			<Triangle down={true} onMouseUp={onMouseUp} onClick={onDown}/>
 		</div>
 	)
 	
