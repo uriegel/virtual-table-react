@@ -13,9 +13,7 @@ const ListBox = ({items}) => {
     
     const onResize = () => {
         setHeight(list.current.clientHeight)
-        console.log(height)
         setItemsPerPage(Math.floor(list.current.clientHeight / itemHeight))
-        console.log(itemsPerPage)
     }
 
     if (!isRunning) {
@@ -41,7 +39,7 @@ const ListBox = ({items}) => {
             <div className="list" ref={list} >
                 {getItems()}
             </div>
-            <Scrollbar /> 
+            <Scrollbar height={height} itemsPerPage={itemsPerPage} count={items.count} /> 
         </div>
     )
 }
@@ -49,17 +47,14 @@ const ListBox = ({items}) => {
 const App = () => {
     const [items, setItems ] = useState( {count: 0})
     const onInputChange = e => setItems({count: parseInt(e.target.value) || 0, getItem})
-
     const getItem = index => `Item # ${index}`
-
-    const formatCount = count => "Das ist der Kaunt: " + count
 
     return (
         <div className='main'>
             <h1>Scrollbar Test</h1>
                 <div>
                     <input type="number" onChange={onInputChange} placeholder="Items count" />
-                    <div>Items: {formatCount(items.count)} </div>
+                    <div>Items: {items.count} </div>
                 </div>
             <ListBox items={items}/>
         </div>    

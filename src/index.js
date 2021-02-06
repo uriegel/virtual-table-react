@@ -10,27 +10,23 @@ const Triangle = ({down}) => (
     </svg>
 )
 
-// TODO: height, itemsPerPage and Count as state-props
-// TODO: gripHeight as function:
-// var gripHeight = this.scrollbarHeight * (this.itemsPerPage / this.totalCount)
-//             if (gripHeight < 5)
-//                 gripHeight = 5
-//             return gripHeight
-// TODO: weg in ScrollbaTEst:
-// 	   <div>{{name}}</div> name as state-prop
-       //<div>{{formatName(name)}}</div> formatName = name => "das ist " + name
+export const Scrollbar = ({height, itemsPerPage, count}) => {
+	const gripTop = 0
 
+	const getGripHeight = (scrollbarHeight, itemsPerPage, totalCount) => {
+		let gripHeight = scrollbarHeight * (itemsPerPage / totalCount)
+		if (gripHeight < 5)
+			gripHeight = 5
+		return gripHeight
+	}
 
-export const Scrollbar = () => {
-	const [gripHeight, setGripHeight] = useState(0)
-	const [gripTop, setGripTop] = useState(0)
 	return (
 		<div className={styles.scrollbarContainer}>
 			<Triangle />
 			<div className={styles.scrollbar} >
 				<div className={styles.grip} style={{
 				    top: gripTop + 'px',
-					height: gripHeight + 'px'
+					height: getGripHeight(height, itemsPerPage, count) + 'px'
 				}} >
 				</div>
 			</div>
