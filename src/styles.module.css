@@ -57,27 +57,30 @@
 	width: 16px;
 	height: 16px;
 }
+.scrollbarContainer {
+	position: absolute;
+    height: 100%;
+    width: var(--tablereact-scrollbar-width); 
+	right: 0px;
+    overflow: hidden;
+    box-sizing: border-box;
+    border-style: solid;
+    border-color: var(--tablereact-scrollbar-border-color);
+    border-width: var(--tablereact-scrollbar-border-width);
+    user-select: none;
+    display: flex;
+    flex-direction: column;  
+	transition: transform 0.3s;  
+}
+.scrollbarContainer.inactive {
+	transform: translate(100%, 0px);
+}
 .scrollbar {
 	background-color: var(--tablereact-scrollbar-background-color);
     transition: background-color 0.5s;
     flex-grow: 1;
     position: relative;	
 }
-.scrollbarContainer {
-	position: absolute;
-    height: 100%;
-    width: var(--tablereact-scrollbar-width); 
-    overflow: hidden;
-    box-sizing: border-box;
-    right: 0px;
-    border-style: solid;
-    border-color: var(--tablereact-scrollbar-border-color);
-    border-width: var(--tablereact-scrollbar-border-width);
-    user-select: none;
-    display: flex;
-    flex-direction: column;    
-}
-
 .svg {
     display: var(--tablereact-scrollbar-button-display);
     width: 100%;

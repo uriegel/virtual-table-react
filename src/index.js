@@ -10,9 +10,10 @@ const Triangle = ({down}) => (
     </svg>
 )
 
-export const Scrollbar = ({height, itemsPerPage, count}) => {
+export const Scrollbar = ({ height, itemsPerPage, count}) => {
 	const gripTop = 0
 
+	// TODO: scrollbarHeight is not set, ist srcollbarContainerHeight!!!
 	const getGripHeight = (scrollbarHeight, itemsPerPage, totalCount) => {
 		let gripHeight = scrollbarHeight * (itemsPerPage / totalCount)
 		if (gripHeight < 5)
@@ -22,8 +23,8 @@ export const Scrollbar = ({height, itemsPerPage, count}) => {
 
 	const getRange = (totalCount, itemsPerPage) =>  Math.max(0, totalCount - itemsPerPage) + 1
 
-	return getRange(count, itemsPerPage) > 1 && (
-		<div className={styles.scrollbarContainer}>
+	return (
+		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`} >
 			<Triangle />
 			<div className={styles.scrollbar} >
 				<div className={styles.grip} style={{
