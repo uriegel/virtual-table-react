@@ -11,11 +11,16 @@ const Triangle = ({down}) => (
 )
 
 export const Scrollbar = () => {
+	const [gripHeight, setGripHeight] = useState(0)
+	const [gripTop, setGripTop] = useState(0)
 	return (
 		<div className={styles.scrollbarContainer}>
 			<Triangle />
-			<div className={styles.scrollbar}>
-				<div className={styles.grip}>
+			<div className={styles.scrollbar} >
+				<div className={styles.grip} style={{
+				    top: gripTop + 'px',
+					height: gripHeight + 'px'
+				}} >
 				</div>
 			</div>
 			<Triangle down={true}/>

@@ -115,9 +115,7 @@
     box-sizing: border-box;
     border-radius: var(--tablereact-scrollbar-grip-radius);
     background-color: var(--tablereact-scrollbar-grip-color);
-    top: 15px;
     width: var(--tablereact-scrollbar-grip-width);
     right: var(--tablereact-scrollbar-grip-right);
-    height: 28px;
     transition: background-color 0.5s, width 0.5s;
 }
