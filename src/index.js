@@ -44,16 +44,45 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 		let newPosition = position
 		mouseRepeat(() => positionChanged(Math.max(--newPosition, 0)))
 	}
+	
 	const onDown = () => {
 		let newPosition = position
 		mouseRepeat(() => positionChanged(Math.min(++newPosition, getRange(count, itemsPerPage) - 1)))
 	}
 
+	const onPageMouseDown = sevt => {
+		let newPosition = position
+		const gripHeight = getGripHeight(0, itemsPerPage, count)				
+		const evt = sevt.nativeEvent
+		const range = getRange(count, itemsPerPage)
+		const isUp = evt.offsetY <= getGripTop(newPosition, count, itemsPerPage)
+		const action = isUp 
+			? () => {
+				const gripTop = getGripTop(newPosition, count, itemsPerPage)
+				if (evt.offsetY < gripTop)
+					newPosition -= itemsPerPage - 1
+				positionChanged(Math.max(newPosition, 0))
+			}
+			: () => {
+				const gripTop = getGripTop(newPosition, count, itemsPerPage)
+				if (evt.offsetY > gripTop + gripHeight)
+					newPosition += itemsPerPage - 1
+				positionChanged(Math.min(range -1, newPosition))
+			}
+		mouseRepeat(action)
+	}
+
+	const onGripDown = evt => {
+		evt.stopPropagation()
+	}
+
 	return (
-		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`} >
+		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`}>
+			
 			<Triangle onClick={onUp} />
-			<div ref={scrollbarElement} className={styles.scrollbar} >
-				<div className={styles.grip} style={{
+			<div ref={scrollbarElement} className={styles.scrollbar} 
+				onMouseDown={onPageMouseDown} >
+				<div className={styles.grip} onMouseDown={onGripDown} style={{
 				    top: getGripTop(position, count, itemsPerPage) + 'px',
 					height: getGripHeight(height, itemsPerPage, count) + 'px'
 				}} >
@@ -165,6 +194,8 @@ export const Columns = ({ cols }) => {
 			evt.stopPropagation()
 		}		
 	}
+
+	const onGripDown = () => {}
 
   	return (
 		<thead>
