@@ -232,9 +232,7 @@ export const Columns = ({ cols }) => {
 	)
 }
 
-// TODO: Scrollbar Mousewheel
 // TODO: Theming Yaru
 // TODO: Theming Yaru Scrollbar
 // TODO: Columns: iSortable
-// TODO: Scrollbar grip
 // TODO: Scrollbar on/off ... ellipse

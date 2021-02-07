@@ -32,8 +32,22 @@ const ListBox = ({items}) => {
                 .keys())        
                 .map(i => jsxReturner(items.getItem(i + position)))
 
+    const onWheel = sevt => {
+        const evt = sevt.nativeEvent
+        if (items.count > itemsPerPage) {
+            var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
+            let newPos = position + delta
+            if (newPos < 0)
+                newPos = 0
+            if (newPos > items.count - itemsPerPage) {
+                newPos = items.count - itemsPerPage
+            }
+            setPosition(newPos)
+        }        
+    }
+
     return (
-        <div className='listcontainer'>
+        <div className='listcontainer' onWheel={onWheel}>
             <div className="list" ref={list} >
                 {getItems()}
             </div>
