@@ -72,8 +72,28 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 		mouseRepeat(action)
 	}
 
-	const onGripDown = evt => {
-		evt.stopPropagation()
+	const onGripDown = sevt => {
+		const evt = sevt.nativeEvent
+		const gripTop = getGripTop(position, count, itemsPerPage)
+		const gripHeight = getGripHeight(0, itemsPerPage, count)				
+		const startPos = evt.y - gripTop
+		const range = height - gripHeight
+		const maxPosition = count - itemsPerPage
+		const onmove = evt => {
+			const delta = evt.y - startPos
+			const factor = Math.min(1, (Math.max(0, delta * 1.0 / range)))
+			positionChanged(Math.floor(factor * maxPosition))
+			evt.preventDefault()
+			evt.stopPropagation()
+		}
+		const onup = () => {
+			window.removeEventListener('mousemove', onmove, true)
+			window.removeEventListener('mouseup', onup, true)
+		}
+		window.addEventListener('mousemove', onmove, true)
+		window.addEventListener('mouseup', onup, true)
+
+		sevt.stopPropagation()
 	}
 
 	return (
