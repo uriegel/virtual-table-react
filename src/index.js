@@ -232,6 +232,6 @@ export const Columns = ({ cols }) => {
 	)
 }
 
-// TODO: Theming Yaru Columns
 // TODO: Columns: iSortable
+// TODO: Columns: subColumn
 // TODO: Scrollbar on/off ... ellipse
