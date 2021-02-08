@@ -19,11 +19,11 @@
 .pointerEw {
 	cursor: ew-resize;
 }
-.is-sortable {
+.isSortable {
 	background-color: var(--tablereact-selected-background-color);
 	transition: background-color 0.3s; 
 }
-.is-sortable:hover {
+.isSortable:hover {
 	background-color: var(--tablereact-selected-background-hover-color);
 }
 .subItem {

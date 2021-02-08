@@ -5,16 +5,16 @@ import { Columns } from 'virtual-table-react'
 
 const App = () => {
     const [cols, setCols] = useState([
-        { name: "Eine Spalte" }, 
+        { name: "Eine Spalte", isSortable: true }, 
         { name: "Zweite. Spalte" }, 
-        { name: "Letzte Spalte"}
+        { name: "Letzte Spalte", isSortable: true}
     ])
 
     return (
         <div>
             <p><button onClick={() => setCols([
-                { name: "Column 1" }, 
-                { name: "2" }, 
+                { name: "Column 1", isSortable: true }, 
+                { name: "2", isSortable: true }, 
                 { name: "3rd Col." }])}>Ändern</button></p>
             <table>
                 <Columns cols={cols} />

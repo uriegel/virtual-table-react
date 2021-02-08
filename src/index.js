@@ -217,11 +217,11 @@ export const Columns = ({ cols }) => {
 
   	return (
 		<thead>
-			<tr className={draggingReady && styles.pointerEw}>
+			<tr className={draggingReady ? styles.pointerEw : ''}>
 				{cols.map((col, i) => (
 					<th onMouseMove={onMouseMove}
 						onMouseDown={onMouseDown} 
-						key={i} className={styles.column} >
+						key={i} className= {`${styles.column} ${col.isSortable ? styles.isSortable : ''}`}>
 						{col.name}
 					</th> 
 				))}
@@ -230,6 +230,5 @@ export const Columns = ({ cols }) => {
 	)
 }
 
-// TODO: Columns: iSortable
 // TODO: Columns: subColumn
 // TODO: Scrollbar on/off ... ellipse
