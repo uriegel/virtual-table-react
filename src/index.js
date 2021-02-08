@@ -221,8 +221,11 @@ export const Columns = ({ cols }) => {
 				{cols.map((col, i) => (
 					<th onMouseMove={onMouseMove}
 						onMouseDown={onMouseDown} 
-						key={i} className= {`${styles.column} ${col.isSortable ? styles.isSortable : ''}`}>
-						{col.name}
+						key={i} className= {`${col.isSortable ? styles.isSortable : ''}`}>
+							<div className= {styles.column}>
+								<div className= {styles.maincol}>{col.name}</div>
+								{col.subItem ? <div>{col.subItem}</div> : ""}
+							</div>
 					</th> 
 				))}
 			</tr>
@@ -230,5 +233,5 @@ export const Columns = ({ cols }) => {
 	)
 }
 
-// TODO: Columns: subColumn
+// TODO: Columns: sort ascending, descending
 // TODO: Scrollbar on/off ... ellipse

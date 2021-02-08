@@ -13,7 +13,7 @@ const App = () => {
     return (
         <div>
             <p><button onClick={() => setCols([
-                { name: "Column 1", isSortable: true }, 
+                { name: "Column 1", isSortable: true, subItem: "ext" }, 
                 { name: "2", isSortable: true }, 
                 { name: "3rd Col." }])}>Ändern</button></p>
             <table>
