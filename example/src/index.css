@@ -1,4 +1,4 @@
-:root {  
+/* :root {  
 	--tablereact-main-background-color: white;
 	--tablereact-selected-color:  white;
 	--tablereact-selected-background-color: blue;
@@ -20,8 +20,9 @@
     --tablereact-scrollbar-button-hover-background-color: rgb(209, 209, 209);
     --tablereact-scrollbar-button-active-background-color: #aaa;
       
-}
-/* :root { 
+}*/
+:root { 
+	--selected-background-color: #e95420;
 	--tablereact-main-background-color: #fcfcfc;
 	--tablereact-selected-color:  #737373;
 	--tablereact-selected-background-color: #eff0f1;
@@ -30,14 +31,15 @@
 
     --tablereact-scrollbar-width: 12px;
     --tablereact-scrollbar-border-width: 0px;
-    --tablereact-scrollbar-button-display: none; 
     --tablereact-scrollbar-background-color: transparent;
-    --tablereact-scrollbar-border-color: gray;
+	--tablereact-scrollbar-background-hover-color: rgb(192, 192, 192);
+	--tablereact-scrollbar-grip-radius: 999px;
     --tablereact-scrollbar-grip-color: gray;    
     --tablereact-scrollbar-grip-hover-color: gray;    
-    --tablereact-scrollbar-grip-active-color: var(--tablereact-selected-background-color);    
+    --tablereact-scrollbar-grip-active-color: var(--selected-background-color);    
 	--tablereact-scrollbar-grip-width: 4px; 
-	--tablereact-scrollbar-grip-width: 1px; 
+	--tablereact-scrollbar-grip-right: 1px; 
+    --tablereact-scrollbar-button-display: none; 
     --tablereact-scrollbar-button-color: #666;
     --tablereact-scrollbar-button-hover-color: #555;
     --tablereact-scrollbar-button-active-color: #444;
@@ -45,7 +47,7 @@
     --tablereact-scrollbar-button-hover-background-color: rgb(209, 209, 209);
     --tablereact-scrollbar-button-active-background-color: #aaa;
       
-} */
+}
 body {
 	height: 100vh;
 	margin: 0px;
