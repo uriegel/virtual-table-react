@@ -215,8 +215,6 @@ export const Columns = ({ cols }) => {
 		}		
 	}
 
-	const onGripDown = () => {}
-
   	return (
 		<thead>
 			<tr className={draggingReady && styles.pointerEw}>
@@ -224,7 +222,7 @@ export const Columns = ({ cols }) => {
 					<th onMouseMove={onMouseMove}
 						onMouseDown={onMouseDown} 
 						key={i} className={styles.column} >
-						{col[1]}
+						{col.name}
 					</th> 
 				))}
 			</tr>
