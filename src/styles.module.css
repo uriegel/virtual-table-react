@@ -37,7 +37,7 @@
 	overflow: hidden;    
 	text-overflow: ellipsis;
 }
-.sort-ascending:before {
+.sortAscending:before {
 	position: relative;
 	bottom: 11px;
 	border-left: 4px solid transparent;
@@ -46,7 +46,7 @@
 	content: '';
 	margin-right: 5px;
 }
-.sort-descending:before {
+.sortDescending:before {
 	position: relative;
 	top: 10px;
 	border-left: 4px solid transparent;

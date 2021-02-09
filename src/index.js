@@ -119,7 +119,8 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 
 export const Columns = ({ cols }) => {
 	const [draggingReady, setDraggingReady] = useState(false)
-	
+	const [columnSorts, setColumnSorts] = useState(new Array(cols.length))
+
 	const onMouseMove = sevt => {
 		const evt = sevt.nativeEvent
 		const th = evt.target
@@ -215,6 +216,21 @@ export const Columns = ({ cols }) => {
 		}		
 	}
 
+	const onColumnClick = i =>  {
+		if (cols[i].isSortable) {
+			let newState = [...columnSorts]
+			newState[i] = columnSorts[i] == 1 ? 2 : 1
+			setColumnSorts(newState)
+		}	
+	}
+	
+	const getSorting = i => 
+		columnSorts[i] == 1 
+		? styles.sortAscending 
+		: columnSorts[i] == 2 
+		? styles.sortDescending 
+		: ''
+	
   	return (
 		<thead>
 			<tr className={draggingReady ? styles.pointerEw : ''}>
@@ -222,8 +238,10 @@ export const Columns = ({ cols }) => {
 					<th onMouseMove={onMouseMove}
 						onMouseDown={onMouseDown} 
 						key={i} className= {`${col.isSortable ? styles.isSortable : ''}`}>
-							<div className= {styles.column}>
-								<div className= {styles.maincol}>{col.name}</div>
+							<div className= {styles.column} onClick={() => onColumnClick(i)}>
+								<div className= {`${styles.maincol} ${getSorting(i)}`}>
+									{col.name}
+								</div>
 								{col.subItem ? <div>{col.subItem}</div> : ""}
 							</div>
 					</th> 
@@ -233,5 +251,6 @@ export const Columns = ({ cols }) => {
 	)
 }
 
-// TODO: Columns: sort ascending, descending
+// TODO: Columns: Lift state sort ascending, descending
+// TODO: Columns: sort subItem ascending, descending
 // TODO: Scrollbar on/off ... ellipse
