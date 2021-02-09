@@ -10,6 +10,18 @@ const App = () => {
         { name: "Letzte Spalte", isSortable: true}
     ])
 
+    const onColumnClick = i =>  {
+		if (cols[i].isSortable) {
+			let newState = [...cols].map((col, j) => {
+                if (i != j)
+                    col.columnsSort = undefined
+                return col
+            })
+			newState[i].columnsSort = cols[i].columnsSort == 1 ? 2 : 1
+			setCols(newState)
+		}	
+	}
+
     return (
         <div>
             <p><button onClick={() => setCols([
@@ -17,7 +29,7 @@ const App = () => {
                 { name: "2", isSortable: true }, 
                 { name: "3rd Col." }])}>Ändern</button></p>
             <table>
-                <Columns cols={cols} />
+                <Columns cols={cols} onColumnClick={onColumnClick} />
                 <tbody>
                     <tr>
                         <td>Test</td>

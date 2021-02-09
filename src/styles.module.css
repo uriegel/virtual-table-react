@@ -1,18 +1,19 @@
-.column {
+.columnTh {
 	overflow: hidden;
-	display: flex;
 	white-space: nowrap;
 	user-select: none;
 	text-align: left;
 	font-weight: normal;
-	text-overflow: ellipsis;
 	color: var(--tablereact-selected-color);
 	background-color: var(--tablereact-selected-background-color);        
 	border-left-color: var(--tablereact-columns-separator-color);
 	border-left-style: solid;
 	border-left-width: 1px;
 }
-
+.column {
+	display: flex;
+	text-overflow: ellipsis;
+}
 .column:first-child {
 	border-left-width: 0px;
 }

@@ -117,9 +117,8 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 
 //======================================================================================
 
-export const Columns = ({ cols }) => {
+export const Columns = ({ cols, onColumnClick }) => {
 	const [draggingReady, setDraggingReady] = useState(false)
-	const [columnSorts, setColumnSorts] = useState(new Array(cols.length))
 
 	const onMouseMove = sevt => {
 		const evt = sevt.nativeEvent
@@ -216,18 +215,10 @@ export const Columns = ({ cols }) => {
 		}		
 	}
 
-	const onColumnClick = i =>  {
-		if (cols[i].isSortable) {
-			let newState = [...columnSorts]
-			newState[i] = columnSorts[i] == 1 ? 2 : 1
-			setColumnSorts(newState)
-		}	
-	}
-	
-	const getSorting = i => 
-		columnSorts[i] == 1 
+	const getSorting = col => 
+		col.columnsSort == 1 
 		? styles.sortAscending 
-		: columnSorts[i] == 2 
+		: col.columnsSort == 2 
 		? styles.sortDescending 
 		: ''
 	
@@ -237,9 +228,9 @@ export const Columns = ({ cols }) => {
 				{cols.map((col, i) => (
 					<th onMouseMove={onMouseMove}
 						onMouseDown={onMouseDown} 
-						key={i} className= {`${col.isSortable ? styles.isSortable : ''}`}>
+						key={i} className= {`${styles.columnTh} ${col.isSortable ? styles.isSortable : ''}`}>
 							<div className= {styles.column} onClick={() => onColumnClick(i)}>
-								<div className= {`${styles.maincol} ${getSorting(i)}`}>
+								<div className= {`${styles.maincol} ${getSorting(col)}`}>
 									{col.name}
 								</div>
 								{col.subItem ? <div>{col.subItem}</div> : ""}
@@ -251,6 +242,6 @@ export const Columns = ({ cols }) => {
 	)
 }
 
-// TODO: Columns: Lift state sort ascending, descending
 // TODO: Columns: sort subItem ascending, descending
+// TODO: Columns: width to state in columns
 // TODO: Scrollbar on/off ... ellipse
