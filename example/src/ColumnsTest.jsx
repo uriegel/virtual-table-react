@@ -11,13 +11,31 @@ const App = () => {
     ])
 
     const onColumnClick = i =>  {
+
+        console.log("kolumen")
+
 		if (cols[i].isSortable) {
 			let newState = [...cols].map((col, j) => {
                 if (i != j)
                     col.columnsSort = undefined
+                col.subItemSort = undefined
                 return col
             })
 			newState[i].columnsSort = cols[i].columnsSort == 1 ? 2 : 1
+			setCols(newState)
+		}	
+	}
+
+    const onSubItemClick = i => {
+
+        console.log("sabb")
+
+		if (cols[i].isSortable) {
+			let newState = [...cols].map(col => {
+                col.columnsSort = undefined
+                return col
+            })
+			newState[i].subItemSort = cols[i].subItemSort == 1 ? 2 : 1
 			setCols(newState)
 		}	
 	}
@@ -29,7 +47,7 @@ const App = () => {
                 { name: "2", isSortable: true }, 
                 { name: "3rd Col." }])}>Ändern</button></p>
             <table>
-                <Columns cols={cols} onColumnClick={onColumnClick} />
+                <Columns cols={cols} onColumnClick={onColumnClick} onSubItemClick={onSubItemClick} />
                 <tbody>
                     <tr>
                         <td>Test</td>
