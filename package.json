@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "start": "tsc && microbundle-crl watch --no-compress --format modern,cjs",
-    "build": "tsc && microbundle-crl --no-compress --format modern,cjs",
+    "build": "tsc && microbundle-crl --no-compress --format modern,cjs && copyfiles -f  src/index.d.ts dist",
     "prepare": "run-s build",
     "predeploy": "cd example && npm install && npm run build"
   },
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/react": "^17.0.1",
+    "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
     "microbundle-crl": "^0.13.11",
     "npm-run-all": "^4.1.5",
