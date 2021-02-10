@@ -290,4 +290,9 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 }
 
 // TODO: Columns: width OnUp
+// TODO: Columns: style blue
+// TODO: Scrollbar style yaru and blue
+
+// TODO: VirtualTable
+
 // TODO: Scrollbar on/off ... ellipse
