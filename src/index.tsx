@@ -1,7 +1,13 @@
 import React, { useState, useRef } from 'react'
+// @ts-ignore
 import styles from './styles.module.css'
 
-const Triangle = ({down, onClick}) => (
+interface TriangleProps {
+	down?: boolean
+	onClick: ()=>void
+}
+
+const Triangle = ({down, onClick}: TriangleProps) => (
 	<svg className={styles.svg} viewBox="0 0 100 100" onMouseDown={onClick} >
 		{down
 			? <path className={styles.button} d="M 80,30 50,70 20,30 Z" />
@@ -10,24 +16,32 @@ const Triangle = ({down, onClick}) => (
     </svg>
 )
 
-export const Scrollbar = ({ height, itemsPerPage, count, position, positionChanged }) => {
-	const scrollbarElement = useRef(null)
+export interface ScrollbarProps {
+	height: number, 
+	itemsPerPage: number, 
+	count: number, 
+	position: number, 
+	positionChanged: (pos: number)=>void
+}
+
+export const Scrollbar = ({ height, itemsPerPage, count, position, positionChanged }: ScrollbarProps) => {
+	const scrollbarElement = useRef(null as HTMLInputElement | null)
 	const [timeout, stTimeout] = useState(0)
 	const [interval, stInterval] = useState(0)
 
-	const getGripHeight = (_, itemsPerPage, totalCount) => 
+	const getGripHeight = (height: number, itemsPerPage: number, totalCount: number) => 
 		scrollbarElement.current
 		? Math.max(scrollbarElement.current.clientHeight * (itemsPerPage / totalCount), 5)
 		: 0
 	
-	const getGripTop = (position, totalCount, itemsPerPage) => 
+	const getGripTop = (position: number, totalCount: number, itemsPerPage: number) => 
 		scrollbarElement.current
 		? (scrollbarElement.current.clientHeight - getGripHeight(0, itemsPerPage, totalCount)) * (position / (getRange(totalCount, itemsPerPage) -1))
 		: 0
 
-	const getRange = (totalCount, itemsPerPage) =>  Math.max(0, totalCount - itemsPerPage) + 1
+	const getRange = (totalCount: number, itemsPerPage: number) =>  Math.max(0, totalCount - itemsPerPage) + 1
 
-	const mouseRepeat = (action) => {
+	const mouseRepeat = (action: (pos: number)=>void) => {
 		action(position)
 		let interval = 0
 		const timeout = setTimeout(() => interval = setInterval(action, 50), 600)
@@ -50,7 +64,7 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 		mouseRepeat(() => positionChanged(Math.min(++newPosition, getRange(count, itemsPerPage) - 1)))
 	}
 
-	const onPageMouseDown = sevt => {
+	const onPageMouseDown = (sevt: React.MouseEvent) => {
 		let newPosition = position
 		const gripHeight = getGripHeight(0, itemsPerPage, count)				
 		const evt = sevt.nativeEvent
@@ -72,14 +86,14 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 		mouseRepeat(action)
 	}
 
-	const onGripDown = sevt => {
+	const onGripDown = (sevt: React.MouseEvent) => {
 		const evt = sevt.nativeEvent
 		const gripTop = getGripTop(position, count, itemsPerPage)
 		const gripHeight = getGripHeight(0, itemsPerPage, count)				
 		const startPos = evt.y - gripTop
 		const range = height - gripHeight
 		const maxPosition = count - itemsPerPage
-		const onmove = evt => {
+		const onmove = (evt: globalThis.MouseEvent) => {
 			const delta = evt.y - startPos
 			const factor = Math.min(1, (Math.max(0, delta * 1.0 / range)))
 			positionChanged(Math.floor(factor * maxPosition))
@@ -87,7 +101,7 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 			evt.stopPropagation()
 		}
 		const onup = () => {
-			window.removeEventListener('mousemove', onmove, true)
+			window.removeEventListener('mousemove', e => onmove(e), true)
 			window.removeEventListener('mouseup', onup, true)
 		}
 		window.addEventListener('mousemove', onmove, true)
@@ -117,47 +131,62 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 
 //======================================================================================
 
-export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }) => {
+export interface Column {
+	name: string
+	subItem?: string
+	columnsSort?: number,
+	subItemSort?: number,
+	isSortable?: boolean
+}
+
+export interface ColumnsProps {
+	cols: Column[], 
+	onColumnClick: (column: number)=>void, 
+	onSubItemClick: (column: number)=>void, 
+	onWidthsChanged: (widths: string[])=>void	
+}
+
+export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }: ColumnsProps) => {
 	const [draggingReady, setDraggingReady] = useState(false)
 
-	const onMouseMove = sevt => {
+	const onMouseMove = (sevt: React.MouseEvent) => {
 		const evt = sevt.nativeEvent
-		const th = evt.target
+		const th = evt.target as HTMLElement
 		if (th.nodeName == "TH") {
 			const thWidth = th.clientWidth + th.clientLeft
 			const mouseX = evt.offsetX + th.clientLeft
-			const trRect = th.parentElement.getBoundingClientRect()
+			const trRect = th.parentElement!.getBoundingClientRect()
 			const absoluteRight = trRect.width + trRect.x
-			setDraggingReady(mouseX < 3 || mouseX > thWidth - 4) 
+			setDraggingReady((mouseX < 3 || mouseX > thWidth - 4) 
 				&& (evt.pageX - trRect.x > 4)
-				&& (evt.pageX < absoluteRight - 4)
+				&& (evt.pageX < absoluteRight - 4))
 		}
 		else
 			setDraggingReady(false)
 
 	}
 
-	const onMouseDown = sevt => {
+	const onMouseDown = (sevt: React.MouseEvent) => {
 		if (draggingReady) {
 			const evt = sevt.nativeEvent
-			const th = evt.target
+			const th = evt.target as HTMLElement
 			const mouseX = evt.offsetX + th.clientLeft
 			const dragleft = mouseX < 3
 
 			const startDragPosition = evt.pageX
-			const targetColumn = evt.target.closest("th")
+			const targetColumn = th.closest("th")!
 
-			const currentHeader = dragleft ? targetColumn.previousElementSibling : targetColumn
+			const currentHeader = dragleft ? targetColumn.previousElementSibling as HTMLElement : targetColumn
 			if (!currentHeader)
 				return
-			const nextHeader = currentHeader.nextElementSibling
+			const nextHeader = currentHeader.nextElementSibling as HTMLElement
 			if (!nextHeader)
 				return
 
 			const currentLeftWidth = currentHeader.offsetWidth
 			const sumWidth = currentLeftWidth + nextHeader.offsetWidth
 
-			const onmove = (evt) => {
+			const onmove = (evt: globalThis.MouseEvent) => {
 				document.body.style.cursor = 'ew-resize'
 				let diff = evt.pageX - startDragPosition
 				if (currentLeftWidth + diff < 15)
@@ -165,7 +194,7 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 				else if (diff > sumWidth - currentLeftWidth - 15)
 					diff = sumWidth - currentLeftWidth - 15
 
-				const getCombinedWidth = (column, nextColumn) => {
+				const getCombinedWidth = (column: HTMLElement, nextColumn: HTMLElement) => {
 					const firstWidth = 
 						column.style.width
 						? parseFloat(column.style.width.substr(0, column.style.width.length - 1))
@@ -192,7 +221,7 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 
 			const onup = () => {
 				const getWidths = () => {
-					const ths = Array.from(targetColumn.parentElement.children) 
+					const ths = Array.from(targetColumn.parentElement!.children) as HTMLElement[]
 				 	return ths.map(th => {
 				 		let width = th.style.width
 				 		if (!width)
@@ -203,7 +232,7 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 
 				window.removeEventListener('mousemove', onmove)
 				window.removeEventListener('mouseup', onup)
-				document.body.style.cursor = null
+				document.body.style.cursor = ''
 				
 				onWidthsChanged(getWidths())
 			}
@@ -215,14 +244,14 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 		}		
 	}
 
-	const getSorting = col => 
+	const getSorting = (col: Column) => 
 		col.columnsSort == 1 
 		? styles.sortAscending 
 		: col.columnsSort == 2 
 		? styles.sortDescending 
 		: ''
 
-	const getSubSorting	= col =>
+	const getSubSorting	= (col: Column) =>
 		col.subItemSort == 1
 		? styles.sortAscending 
 		: col.subItemSort == 2 

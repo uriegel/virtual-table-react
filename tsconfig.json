@@ -18,11 +18,11 @@
       "moduleResolution": "node",
       "resolveJsonModule": true,
       "isolatedModules": false,
-      "jsx": "preserve"
+      "jsx": "react"
       
     },
     "include": [
-      "."
+      "./src"
     ]
   }
   

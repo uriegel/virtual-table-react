@@ -3,8 +3,8 @@ import 'virtual-table-react/dist/index.css'
 
 import { Columns } from 'virtual-table-react'
 
-const initialWidths = localStorage.getItem("widths")
-const initialWidths = initialWidths ? JSON.parse(initialWidths) : null)
+const initialWidthsString = localStorage.getItem("widths")
+const initialWidths = initialWidthsString ? JSON.parse(initialWidthsString) : null
 
 const App = () => {
     const [cols, setCols] = useState([
