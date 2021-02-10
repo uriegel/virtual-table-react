@@ -3,6 +3,9 @@ import 'virtual-table-react/dist/index.css'
 
 import { Columns } from 'virtual-table-react'
 
+const initialWidths = localStorage.getItem("widths")
+const initialWidths = initialWidths ? JSON.parse(initialWidths) : null)
+
 const App = () => {
     const [cols, setCols] = useState([
         { name: "Eine Spalte", isSortable: true }, 
@@ -11,9 +14,6 @@ const App = () => {
     ])
 
     const onColumnClick = i =>  {
-
-        console.log("kolumen")
-
 		if (cols[i].isSortable) {
 			let newState = [...cols].map((col, j) => {
                 if (i != j)
@@ -27,9 +27,6 @@ const App = () => {
 	}
 
     const onSubItemClick = i => {
-
-        console.log("sabb")
-
 		if (cols[i].isSortable) {
 			let newState = [...cols].map(col => {
                 col.columnsSort = undefined
@@ -40,6 +37,8 @@ const App = () => {
 		}	
 	}
 
+    const onWidthsChanged = w => localStorage.setItem("widths", JSON.stringify(w))
+
     return (
         <div>
             <p><button onClick={() => setCols([
@@ -47,7 +46,13 @@ const App = () => {
                 { name: "2", isSortable: true }, 
                 { name: "3rd Col." }])}>Ändern</button></p>
             <table>
-                <Columns cols={cols} onColumnClick={onColumnClick} onSubItemClick={onSubItemClick} />
+                <Columns 
+                    cols={cols} 
+                    onColumnClick={onColumnClick} 
+                    onSubItemClick={onSubItemClick}
+                    onWidthsChanged={onWidthsChanged}
+                    onWidthsChanged = {onWidthsChanged}
+                />
                 <tbody>
                     <tr>
                         <td>Test</td>
