@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import 'virtual-table-react/dist/index.css'
 
-import { Columns } from 'virtual-table-react'
+import { Column, Columns } from 'virtual-table-react'
 
 const initialWidthsString = localStorage.getItem("widths")
 const initialWidths = initialWidthsString ? JSON.parse(initialWidthsString) : null
@@ -11,9 +11,9 @@ const App = () => {
         { name: "Eine Spalte", isSortable: true }, 
         { name: "Zweite. Spalte" }, 
         { name: "Letzte Spalte", isSortable: true}
-    ])
+    ] as Column[])
 
-    const onColumnClick = i =>  {
+    const onColumnClick = (i: number) =>  {
 		if (cols[i].isSortable) {
 			let newState = [...cols].map((col, j) => {
                 if (i != j)
@@ -26,7 +26,7 @@ const App = () => {
 		}	
 	}
 
-    const onSubItemClick = i => {
+    const onSubItemClick = (i: number) => {
 		if (cols[i].isSortable) {
 			let newState = [...cols].map(col => {
                 col.columnsSort = undefined
@@ -37,7 +37,7 @@ const App = () => {
 		}	
 	}
 
-    const onWidthsChanged = w => localStorage.setItem("widths", JSON.stringify(w))
+    const onWidthsChanged = (w: string[]) => localStorage.setItem("widths", JSON.stringify(w))
 
     return (
         <div>
@@ -51,7 +51,6 @@ const App = () => {
                     onColumnClick={onColumnClick} 
                     onSubItemClick={onSubItemClick}
                     onWidthsChanged={onWidthsChanged}
-                    onWidthsChanged = {onWidthsChanged}
                 />
                 <tbody>
                     <tr>
