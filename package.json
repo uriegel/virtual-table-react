@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "start": "tsc && microbundle-crl watch --no-compress --format modern,cjs",
-    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "build": "tsc && microbundle-crl --no-compress --format modern,cjs",
     "prepare": "run-s build",
     "predeploy": "cd example && npm install && npm run build"
   },
