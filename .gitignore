@@ -23,7 +23,5 @@ yarn-error.log*
 src/index.d.ts
 src/index.js
 src/index.js.map
-example/src/ColumnsTest.d.ts
-example/src/react-app-env.d.ts
-example/src/index.d.ts
-example/src/ScrollbarTest.js
+example/src/*.js
+example/src/*d.ts
