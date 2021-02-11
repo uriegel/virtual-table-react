@@ -146,12 +146,13 @@ export interface ColumnsProps {
 	onSubItemClick: (column: number)=>void, 
 	onWidthsChanged: (widths: number[])=>void	
 	onColumnHeight: (height: number)=>void	
+	theme?: string
 }
 
-export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, onColumnHeight }: ColumnsProps) => {
+export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, onColumnHeight, theme }: ColumnsProps) => {
 	const columnsHead = useRef<HTMLTableSectionElement>(null)
 
-    useEffect(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), [])
+    useEffect(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), [theme])
 
 	const [draggingReady, setDraggingReady] = useState(false)
 
@@ -183,7 +184,6 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 			const targetColumn = th.closest("th")!
 			const ths = Array.from(targetColumn.parentElement!.children) as HTMLElement[]
 			const test = ths.indexOf(targetColumn)
-			console.log("test", test)
 
 			const currentHeader = dragleft ? targetColumn.previousElementSibling as HTMLElement : targetColumn
 			if (!currentHeader)
@@ -381,4 +381,5 @@ export const VirtualTable = ({ columns, columnsChanged, onSort }: VirtualTablePr
 
 
 // TODO: ThemeChange => onColumnsHeight
+// TODO: Scrollbar width without limit (change theme)
 // TODO: Scrollbar on/off ... ellipse

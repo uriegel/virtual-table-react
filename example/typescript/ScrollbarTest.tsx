@@ -39,8 +39,6 @@ const ListBox = ({items}: ListBoxProps) => {
 
     const onWheel = (sevt: React.WheelEvent) => {
 
-        console.log(listbox.current)
-
         const evt = sevt.nativeEvent
         if (items.count > itemsPerPage) {
             var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
