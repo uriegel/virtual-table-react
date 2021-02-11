@@ -152,7 +152,9 @@ export interface ColumnsProps {
 export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, onColumnHeight, theme }: ColumnsProps) => {
 	const columnsHead = useRef<HTMLTableSectionElement>(null)
 
-    useEffect(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), [theme])
+    useEffect(() => {
+		setTimeout(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), 150)
+	}, [theme])
 
 	const [draggingReady, setDraggingReady] = useState(false)
 
@@ -267,7 +269,7 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 		: ''
 
 	return (
-		<thead ref={columnsHead}>
+		<thead ref={columnsHead} >
 			<tr className={draggingReady ? styles.pointerEw : ''}>
 				{cols.map((col, i) => (
 					<th onMouseMove={onMouseMove}
@@ -379,7 +381,5 @@ export const VirtualTable = ({ columns, columnsChanged, onSort }: VirtualTablePr
 	)
 }
 
-
-// TODO: ThemeChange => onColumnsHeight
 // TODO: Scrollbar width without limit (change theme)
 // TODO: Scrollbar on/off ... ellipse
