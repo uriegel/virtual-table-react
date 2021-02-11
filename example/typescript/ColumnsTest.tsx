@@ -8,9 +8,9 @@ const initialWidths = initialWidthsString ? JSON.parse(initialWidthsString) : nu
 
 const App = () => {
     const [cols, setCols] = useState([
-        { name: "Eine Spalte", isSortable: true }, 
-        { name: "Zweite. Spalte" }, 
-        { name: "Letzte Spalte", isSortable: true}
+        { name: "Eine Spalte", isSortable: true, width: initialWidths && initialWidths[0] }, 
+        { name: "Zweite. Spalte", width: initialWidths && initialWidths[1] }, 
+        { name: "Letzte Spalte", isSortable: true, width: initialWidths && initialWidths[2]}
     ] as Column[])
 
     const onColumnClick = (i: number) =>  {
@@ -37,7 +37,7 @@ const App = () => {
 		}	
 	}
 
-    const onWidthsChanged = (w: string[]) => localStorage.setItem("widths", JSON.stringify(w))
+    const onWidthsChanged = (w: number[]) => localStorage.setItem("widths", JSON.stringify(w))
 
     return (
         <div>

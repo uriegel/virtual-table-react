@@ -101,7 +101,7 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 			evt.stopPropagation()
 		}
 		const onup = () => {
-			window.removeEventListener('mousemove', e => onmove(e), true)
+			window.removeEventListener('mousemove', onmove, true)
 			window.removeEventListener('mouseup', onup, true)
 		}
 		window.addEventListener('mousemove', onmove, true)
@@ -134,6 +134,7 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 export interface Column {
 	name: string
 	subItem?: string
+	width?: number,
 	columnsSort?: number,
 	subItemSort?: number,
 	isSortable?: boolean
@@ -143,7 +144,7 @@ export interface ColumnsProps {
 	cols: Column[], 
 	onColumnClick: (column: number)=>void, 
 	onSubItemClick: (column: number)=>void, 
-	onWidthsChanged: (widths: string[])=>void	
+	onWidthsChanged: (widths: number[])=>void	
 }
 
 export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }: ColumnsProps) => {
@@ -175,6 +176,9 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 
 			const startDragPosition = evt.pageX
 			const targetColumn = th.closest("th")!
+			const ths = Array.from(targetColumn.parentElement!.children) as HTMLElement[]
+			const test = ths.indexOf(targetColumn)
+			console.log("test", test)
 
 			const currentHeader = dragleft ? targetColumn.previousElementSibling as HTMLElement : targetColumn
 			if (!currentHeader)
@@ -222,12 +226,11 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 			const onup = () => {
 				const getWidths = () => {
 					const ths = Array.from(targetColumn.parentElement!.children) as HTMLElement[]
-				 	return ths.map(th => {
-				 		let width = th.style.width
-				 		if (!width)
-				 			width = (100 / cols.length) + '%'
-				 		return width
-				 	})
+				 	return ths.map(th => 
+				 		th.style.width 
+						 	? parseFloat(th.style.width.substr(0, th.style.width.length - 1))
+							: 100 / cols.length
+				 	)
 				}
 
 				window.removeEventListener('mousemove', onmove)
@@ -264,7 +267,9 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 				{cols.map((col, i) => (
 					<th onMouseMove={onMouseMove}
 						onMouseDown={onMouseDown} 
-						key={i} className={`${styles.columnTh} ${col.isSortable ? styles.isSortable : ''}`}>
+						key={i} 
+						className={`${styles.columnTh} ${col.isSortable ? styles.isSortable : ''}`}
+						style={col.width ? {width: col.width + '%'} : {}} >
 							<div className={styles.column} onClick={() => onColumnClick(i)}>
 								<div className={`${styles.maincol} ${getSorting(col)}`}>
 									{col.name}
@@ -289,10 +294,5 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 	)
 }
 
-// TODO: Columns: width OnUp
-// TODO: Columns: style blue
-// TODO: Scrollbar style yaru and blue
-
 // TODO: VirtualTable
-
 // TODO: Scrollbar on/off ... ellipse

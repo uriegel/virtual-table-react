@@ -20,10 +20,10 @@
     "isolatedModules": true,
     "sourceMap": false,
     "jsx": "react",
-    "outDir": "./src",
-    "noEmit": true
+    "outDir": "../src",
+    "noEmit": false
   },
   "include": [
-    "./typescript"
+    "."
   ]
 }

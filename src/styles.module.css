@@ -68,6 +68,7 @@
 	right: 0px;
     overflow: hidden;
     border-style: solid;
+	box-sizing: border-box;
     border-color: var(--tablereact-scrollbar-border-color);
     border-width: var(--tablereact-scrollbar-border-width);
     user-select: none;

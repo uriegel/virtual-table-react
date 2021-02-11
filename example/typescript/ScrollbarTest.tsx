@@ -1,54 +1,61 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import 'virtual-table-react/dist/index.css'
 
 import { Scrollbar } from 'virtual-table-react'
 
 const itemHeight = 18
 
-const ListBox = ({items}) => {
-    const list = useRef(null)
-    const [isRunning, setIsRunning ] = useState(false)
+interface Items {
+    count: number
+    getItem: (i: number)=>string
+}
+
+interface ListBoxProps {
+    items: Items,
+}
+
+const ListBox = ({items}: ListBoxProps) => {
+    const listbox = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
     const [itemsPerPage, setItemsPerPage ] = useState(0)
     const [position, setPosition] = useState(0)
 
-    const onResize = () => {
-        setHeight(list.current.clientHeight)
-        setItemsPerPage(Math.floor(list.current.clientHeight / itemHeight))
-    }
+    useEffect(() => {
+        const handleResize = () => {
+            setHeight(listbox.current!.clientHeight)
+            setItemsPerPage(Math.floor(listbox.current!.clientHeight / itemHeight))
+        }
+        window.addEventListener("resize", handleResize)
+        handleResize()
+        return () => window.removeEventListener("resize", handleResize)
+    })
 
-    if (!isRunning) {
-        window.addEventListener("resize", onResize)
-        setIsRunning(true)
-        setTimeout(onResize)
-    }
-
-    const jsxReturner = item => {
-        return <div key={item}>{item}</div> 
-    }
-
+    const jsxReturner = (item: string) => <div key={item}>{item}</div> 
+    
     const getItems = () => 
         Array.from(Array(Math.min(itemsPerPage, items.count - position))
                 .keys())        
                 .map(i => jsxReturner(items.getItem(i + position)))
 
-    const onWheel = sevt => {
+    const onWheel = (sevt: React.WheelEvent) => {
+
+        console.log(listbox.current)
+
         const evt = sevt.nativeEvent
         if (items.count > itemsPerPage) {
             var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
             let newPos = position + delta
             if (newPos < 0)
                 newPos = 0
-            if (newPos > items.count - itemsPerPage) {
+            if (newPos > items.count - itemsPerPage) 
                 newPos = items.count - itemsPerPage
-            }
             setPosition(newPos)
         }        
     }
 
     return (
         <div className='listcontainer' onWheel={onWheel}>
-            <div className="list" ref={list} >
+            <div ref={listbox}  className='list' >
                 {getItems()}
             </div>
             <Scrollbar 
@@ -62,9 +69,11 @@ const ListBox = ({items}) => {
 }
 
 const App = () => {
-    const [items, setItems ] = useState( {count: 0})
-    const onInputChange = e => setItems({count: parseInt(e.target.value) || 0, getItem})
-    const getItem = index => `Item # ${index}`
+    const [items, setItems ] = useState({count: 0, getItem: (i: number)=>''} as Items)
+    const getItem = (index: number) => `Item # ${index}`
+    const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => setItems(
+        {count: parseInt(e.target.value) || 0, getItem}
+    )
 
     return (
         <div className='main'>

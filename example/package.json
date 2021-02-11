@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "tsc && node ../node_modules/react-scripts/bin/react-scripts.js start",
+    "start": "tsc -p typescript && node ../node_modules/react-scripts/bin/react-scripts.js start",
     "build": "node ../node_modules/react-scripts/bin/react-scripts.js build"
   },
   "dependencies": {
