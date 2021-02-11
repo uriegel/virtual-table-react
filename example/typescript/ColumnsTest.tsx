@@ -39,6 +39,8 @@ const App = () => {
 
     const onWidthsChanged = (w: number[]) => localStorage.setItem("widths", JSON.stringify(w))
 
+    const onColumnHeight = (h: number) => console.log("Column height", h)
+
     return (
         <div>
             <p><button onClick={() => setCols([
@@ -51,6 +53,7 @@ const App = () => {
                     onColumnClick={onColumnClick} 
                     onSubItemClick={onSubItemClick}
                     onWidthsChanged={onWidthsChanged}
+                    onColumnHeight={onColumnHeight}
                 />
                 <tbody>
                     <tr>

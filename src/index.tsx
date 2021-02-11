@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 // @ts-ignore
 import styles from './styles.module.css'
 
@@ -145,9 +145,14 @@ export interface ColumnsProps {
 	onColumnClick: (column: number)=>void, 
 	onSubItemClick: (column: number)=>void, 
 	onWidthsChanged: (widths: number[])=>void	
+	onColumnHeight: (height: number)=>void	
 }
 
-export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }: ColumnsProps) => {
+export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, onColumnHeight }: ColumnsProps) => {
+	const columnsHead = useRef<HTMLTableSectionElement>(null)
+
+    useEffect(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), [])
+
 	const [draggingReady, setDraggingReady] = useState(false)
 
 	const onMouseMove = (sevt: React.MouseEvent) => {
@@ -262,7 +267,7 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 		: ''
 
 	return (
-		<thead>
+		<thead ref={columnsHead}>
 			<tr className={draggingReady ? styles.pointerEw : ''}>
 				{cols.map((col, i) => (
 					<th onMouseMove={onMouseMove}
@@ -294,5 +299,86 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 	)
 }
 
-// TODO: VirtualTable
+//===================================================================================
+
+export interface VirtualTableProps {
+	columns: Column[]
+	columnsChanged: (columns: Column[])=>void
+	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
+}
+
+export const VirtualTable = ({ columns, columnsChanged, onSort }: VirtualTableProps) => {
+	const virtualTable = useRef<HTMLDivElement>(null)
+
+    const onColumnClick = (i: number) =>  {
+		if (columns[i].isSortable) {
+			let newState = [...columns].map((col, j) => {
+                if (i != j)
+                    col.columnsSort = undefined
+                col.subItemSort = undefined
+                return col
+            })
+			newState[i].columnsSort = columns[i].columnsSort == 1 ? 2 : 1
+			columnsChanged(newState)
+			onSort(i, columns[i].columnsSort == 2)
+		}	
+	}
+
+    const onSubItemClick = (i: number) => {
+		if (columns[i].isSortable) {
+			let newState = [...columns].map(col => {
+                col.columnsSort = undefined
+                return col
+            })
+			newState[i].subItemSort = columns[i].subItemSort == 1 ? 2 : 1
+			columnsChanged(newState)
+			onSort(i, columns[i].columnsSort == 2, true)
+		}	
+	}
+
+	const onWidthsChanged = (w: number[]) => 
+		columnsChanged([...columns].map((col, i) => {
+			col.width = w[i]
+			return col
+		}))
+
+	const onColumnHeight = (h: number) => {}
+
+	const [height, setHeight ] = useState(0)		
+
+    useEffect(() => {
+        const handleResize = () => {
+            setHeight(virtualTable.current!.clientHeight)
+ //           setItemsPerPage(Math.floor(virtualTable.current!.clientHeight / itemHeight))
+        }
+        window.addEventListener("resize", handleResize)
+        handleResize()
+        return () => window.removeEventListener("resize", handleResize)
+    })
+
+	return (
+		<div ref={virtualTable}>
+			<table>
+				<Columns 
+                    cols={columns} 
+                    onColumnClick={onColumnClick} 
+                    onSubItemClick={onSubItemClick}
+                    onWidthsChanged={onWidthsChanged}
+					onColumnHeight={onColumnHeight}
+                />
+                <tbody>
+				</tbody>
+			</table>
+            {/* <Scrollbar 
+                height={height} 
+                itemsPerPage={itemsPerPage} 
+                count={items.count} 
+                position={position}
+                positionChanged={setPosition} />  */}
+		</div>
+	)
+}
+
+
+// TODO: ThemeChange => onColumnsHeight
 // TODO: Scrollbar on/off ... ellipse
