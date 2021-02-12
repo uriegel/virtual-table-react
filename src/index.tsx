@@ -305,13 +305,19 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 
 const itemHeight = 18 // TODO
 
+export interface VirtualTableItems {
+    count: number
+    getItem: (i: number)=>string
+}
+
 export interface VirtualTableProps {
 	columns: Column[]
 	onColumnsChanged: (columns: Column[])=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
+	items: VirtualTableItems 
 }
 
-export const VirtualTable = ({ columns, onColumnsChanged, onSort }: VirtualTableProps) => {
+export const VirtualTable = ({ columns, onColumnsChanged, onSort, items }: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
 	const [columnHeight, setColumnHeight ] = useState(0)
@@ -362,9 +368,22 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort }: VirtualTable
         return () => window.removeEventListener("resize", handleResize)
     })
 
+    const jsxReturner = (item: string) => (
+		<tr key={item}>
+			<td>Hallo</td>
+			<td>Du</td>
+			<td>{item}</td>
+		</tr> 
+	)
+    
+    const getItems = () => 
+        Array.from(Array(Math.min(itemsPerPage, items.count - position))
+			.keys())        
+			.map(i => jsxReturner(items.getItem(i + position)))
+
 	return (
-		<div ref={virtualTable}>
-			<table>
+		<div className={styles.tableviewRoot} ref={virtualTable}>
+			<table className={styles.table}>
 				<Columns 
                     cols={columns} 
                     onColumnClick={onColumnClick} 
@@ -373,6 +392,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort }: VirtualTable
 					onColumnHeight={onColumnHeight}
                 />
                 <tbody>
+					{getItems()}
 				</tbody>
 			</table>
             {/* <Scrollbar 

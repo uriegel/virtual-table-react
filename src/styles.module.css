@@ -145,3 +145,25 @@
     background-color: var(--tablereact-scrollbar-grip-active-color);
     transition: background-color 0s;
 }
+.tableviewRoot {
+    flex-grow: 1;    
+    position: relative;
+    overflow: hidden;
+    outline-width: 0px;
+    color: var(--tablereact-main-color);
+    background-color: var(--tablereact-main-background-color);
+}
+.table {
+    position: absolute;
+    width: 100%;
+    box-sizing: border-box;
+    table-layout: fixed;
+    border-spacing: 0px;
+}
+.table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    user-select: none;
+    transition: padding-right .4s;
+}    
