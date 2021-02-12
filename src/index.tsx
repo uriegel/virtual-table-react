@@ -303,14 +303,20 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 
 //===================================================================================
 
+const itemHeight = 18 // TODO
+
 export interface VirtualTableProps {
 	columns: Column[]
-	columnsChanged: (columns: Column[])=>void
+	onColumnsChanged: (columns: Column[])=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 }
 
-export const VirtualTable = ({ columns, columnsChanged, onSort }: VirtualTableProps) => {
+export const VirtualTable = ({ columns, onColumnsChanged, onSort }: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
+    const [height, setHeight ] = useState(0)
+	const [columnHeight, setColumnHeight ] = useState(0)
+    const [itemsPerPage, setItemsPerPage ] = useState(0)
+    const [position, setPosition] = useState(0)
 
     const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -321,7 +327,7 @@ export const VirtualTable = ({ columns, columnsChanged, onSort }: VirtualTablePr
                 return col
             })
 			newState[i].columnsSort = columns[i].columnsSort == 1 ? 2 : 1
-			columnsChanged(newState)
+			onColumnsChanged(newState)
 			onSort(i, columns[i].columnsSort == 2)
 		}	
 	}
@@ -333,25 +339,23 @@ export const VirtualTable = ({ columns, columnsChanged, onSort }: VirtualTablePr
                 return col
             })
 			newState[i].subItemSort = columns[i].subItemSort == 1 ? 2 : 1
-			columnsChanged(newState)
+			onColumnsChanged(newState)
 			onSort(i, columns[i].columnsSort == 2, true)
 		}	
 	}
 
 	const onWidthsChanged = (w: number[]) => 
-		columnsChanged([...columns].map((col, i) => {
+		onColumnsChanged([...columns].map((col, i) => {
 			col.width = w[i]
 			return col
 		}))
 
-	const onColumnHeight = (h: number) => {}
-
-	const [height, setHeight ] = useState(0)		
+	const onColumnHeight = (h: number) => setColumnHeight(h)
 
     useEffect(() => {
         const handleResize = () => {
-            setHeight(virtualTable.current!.clientHeight)
- //           setItemsPerPage(Math.floor(virtualTable.current!.clientHeight / itemHeight))
+            setHeight(virtualTable.current!.clientHeight - columnHeight)
+            setItemsPerPage(Math.floor(height / itemHeight))
         }
         window.addEventListener("resize", handleResize)
         handleResize()

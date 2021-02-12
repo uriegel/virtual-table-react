@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { ColumnsTest, ColumnsTestProps } from './ColumnsTest'
+import { ColumnsTest } from './ColumnsTest'
 import ScrollbarTest from './ScrollbarTest'
+import {VirtualTableTest} from './VirtualTableTest'
 
 const App = () => {
     const [appChoice, setAppChoice] = useState(0)
@@ -26,15 +27,22 @@ const App = () => {
 
     return (
         <div>
-            <select onChange={onAppChange}>
-                <option>Columns</option>
-                <option>Scrollbar</option>
-            </select>
-            <select onChange={onThemeChange}>
-                <option>blue</option>
-                <option>yaru</option>
-            </select>
-            {appChoice == 1 ? <ScrollbarTest /> : <ColumnsTest theme={theme}/>}
+            <div>
+                <select onChange={onAppChange}>
+                    <option>Columns</option>
+                    <option>Scrollbar</option>
+                    <option>Virtual Table</option>
+                </select>
+                <select onChange={onThemeChange}>
+                    <option>blue</option>
+                    <option>yaru</option>
+                </select>
+            </div>
+            {appChoice == 1 
+                ? <ScrollbarTest /> 
+                : (appChoice == 2 
+                    ? <VirtualTableTest />
+                    : <ColumnsTest theme={theme}/>)}
         </div>
     )
 }
