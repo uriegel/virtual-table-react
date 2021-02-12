@@ -305,9 +305,13 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 
 const itemHeight = 18 // TODO
 
+export interface VirtualTableItem {
+	key: any
+}
+
 export interface VirtualTableItems {
     count: number
-    getItem: (i: number)=>string
+    getItem: (i: number)=>VirtualTableItem
 }
 
 export interface VirtualTableProps {
@@ -315,9 +319,10 @@ export interface VirtualTableProps {
 	onColumnsChanged: (columns: Column[])=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 	items: VirtualTableItems 
+	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 }
 
-export const VirtualTable = ({ columns, onColumnsChanged, onSort, items }: VirtualTableProps) => {
+export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer }: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
 	const [columnHeight, setColumnHeight ] = useState(0)
@@ -368,11 +373,9 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items }: Virtu
         return () => window.removeEventListener("resize", handleResize)
     })
 
-    const jsxReturner = (item: string) => (
-		<tr key={item}>
-			<td>Hallo</td>
-			<td>Du</td>
-			<td>{item}</td>
+    const jsxReturner = (item: VirtualTableItem) => (
+		<tr key={item.key}>
+			{itemRenderer(item)}
 		</tr> 
 	)
     
@@ -405,5 +408,6 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items }: Virtu
 	)
 }
 
+// TODO: const itemHeight = 18 
 // TODO: Scrollbar width without limit (change theme)
 // TODO: Scrollbar on/off ... ellipse

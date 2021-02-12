@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import 'virtual-table-react/dist/index.css'
 
-import { Column, VirtualTable, VirtualTableItems } from 'virtual-table-react'
+import { Column, VirtualTable, VirtualTableItems, VirtualTableItem } from 'virtual-table-react'
+
+interface TableItem extends VirtualTableItem {
+    col1: string
+    col2: string
+    col3: string
+}
 
 export const VirtualTableTest = () => {
     const [cols, setCols] = useState([
@@ -9,20 +15,29 @@ export const VirtualTableTest = () => {
         { name: "Zweite. Spalte" }, 
         { name: "Letzte Spalte", isSortable: true }
     ] as Column[])
-    const [items, setItems ] = useState({count: 0, getItem: (i: number)=>''} as VirtualTableItems)
+    const [items, setItems ] = useState({count: 0, getItem: (i: number)=>{}} as VirtualTableItems)
 
     const onColsChanged = (cols: Column[])=> {}
     const onSort = ()=> {}
 
-    const getItem = (index: number) => `Item # ${index}`
+    const getItem = (index: number) => ({ col1: `Name ${index}`, col2: `Adresse ${index}`, col3: `Größe ${index}`, key: `Item # ${index}`} as TableItem)
     const onChange = () => setItems({count: 50, getItem})
+    
+    const itemRenderer = (item: VirtualTableItem) => {
+        const tableItem = item as TableItem
+        return [
+            <td key={1}>{tableItem.col1}</td>,
+            <td key={2}>{tableItem.col2}</td>,
+            <td key={3}>{tableItem.col3}</td>	
+	    ]
+    }
 
     return (
         <div className='rootVirtualTable'>
             <h1>Virtual Table</h1>
             <button onClick={onChange}>Fill</button>
             <div className='containerVirtualTable'>
-                <VirtualTable columns={cols} onColumnsChanged={onColsChanged} onSort={onSort} items={items}/>
+                <VirtualTable columns={cols} onColumnsChanged={onColsChanged} onSort={onSort} items={items} itemRenderer={itemRenderer}/>
             </div>
         </div>
     )
