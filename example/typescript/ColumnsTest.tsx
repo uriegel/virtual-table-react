@@ -42,8 +42,6 @@ export const ColumnsTest = ({theme}: ColumnsTestProps) => {
 
     const onWidthsChanged = (w: number[]) => localStorage.setItem("widths", JSON.stringify(w))
 
-    const onColumnHeight = (h: number) => console.log("Column height", h)
-
     return (
         <div>
             <p><button onClick={() => setCols([
@@ -56,7 +54,6 @@ export const ColumnsTest = ({theme}: ColumnsTestProps) => {
                     onColumnClick={onColumnClick} 
                     onSubItemClick={onSubItemClick}
                     onWidthsChanged={onWidthsChanged}
-                    onColumnHeight={onColumnHeight}
                     theme={theme}
                 />
                 <tbody>

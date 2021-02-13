@@ -145,16 +145,15 @@ export interface ColumnsProps {
 	onColumnClick: (column: number)=>void, 
 	onSubItemClick: (column: number)=>void, 
 	onWidthsChanged: (widths: number[])=>void	
-	onColumnHeight: (height: number)=>void	
 	theme?: string
 }
 
-export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, onColumnHeight, theme }: ColumnsProps) => {
+export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, theme }: ColumnsProps) => {
 	const columnsHead = useRef<HTMLTableSectionElement>(null)
 
-    useEffect(() => {
-		setTimeout(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), 150)
-	}, [theme])
+    // useEffect(() => {
+	// 	setTimeout(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), 150)
+	// }, [theme])
 
 	const [draggingReady, setDraggingReady] = useState(false)
 
@@ -360,8 +359,6 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 			return col
 		}))
 
-	const onColumnHeight = (h: number) => setColumnHeight(h)
-
     useEffect(() => {
         const handleResize = () => {
             setHeight(virtualTable.current!.clientHeight - columnHeight)
@@ -373,8 +370,13 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
     })
 
 	useLayoutEffect(() => {
-		console.log("LE")
-		setItemHeight(19)
+		const trh = virtualTable.current!.querySelector("tr")
+		const tr = virtualTable.current!.querySelector("tbody tr")
+		console.log("LE", tr, tr && tr.clientHeight)
+		if (tr && tr.clientHeight)
+			setItemHeight(tr.clientHeight)
+		if (trh && trh.clientHeight)
+			setColumnHeight(trh.clientHeight)
 	}, [items, columnHeight])
 
     const jsxReturner = (item: VirtualTableItem) => (
@@ -396,7 +398,6 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
                     onColumnClick={onColumnClick} 
                     onSubItemClick={onSubItemClick}
                     onWidthsChanged={onWidthsChanged}
-					onColumnHeight={onColumnHeight}
                 />
                 <tbody>
 					{getItems()}
@@ -412,6 +413,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	)
 }
 
-// TODO: const itemHeight = 18 
+// TODO: ColumnsHead ref obsolete
+// TODO: ThemeChanged => measure clientHeight
 // TODO: Scrollbar width without limit (change theme)
 // TODO: Scrollbar on/off ... ellipse
