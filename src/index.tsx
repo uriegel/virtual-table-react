@@ -427,5 +427,5 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	)
 }
 
-// TODO: Scrollbar on/off ... ellipse width
+// TODO: Scrollbar on/off ... ellipse : in theme scrollbarwidth, event scrollbar on/off
 // TODO: selected item control
