@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 // @ts-ignore
 import styles from './styles.module.css'
 
-interface TriangleProps {
+type TriangleProps = {
 	down?: boolean
 	onClick: ()=>void
 }
@@ -16,7 +16,7 @@ const Triangle = ({down, onClick}: TriangleProps) => (
     </svg>
 )
 
-export interface ScrollbarProps {
+export type ScrollbarProps = {
 	height: number, 
 	itemsPerPage: number, 
 	count: number, 
@@ -131,7 +131,7 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 
 //======================================================================================
 
-export interface Column {
+export type Column = {
 	name: string
 	subItem?: string
 	width?: number,
@@ -140,21 +140,14 @@ export interface Column {
 	isSortable?: boolean
 }
 
-export interface ColumnsProps {
+export type ColumnsProps = {
 	cols: Column[], 
 	onColumnClick: (column: number)=>void, 
 	onSubItemClick: (column: number)=>void, 
 	onWidthsChanged: (widths: number[])=>void	
-	theme?: string
 }
 
-export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, theme }: ColumnsProps) => {
-	const columnsHead = useRef<HTMLTableSectionElement>(null)
-
-    // useEffect(() => {
-	// 	setTimeout(() => onColumnHeight(columnsHead.current?.getBoundingClientRect().height!), 150)
-	// }, [theme])
-
+export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }: ColumnsProps) => {
 	const [draggingReady, setDraggingReady] = useState(false)
 
 	const onMouseMove = (sevt: React.MouseEvent) => {
@@ -268,7 +261,7 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 		: ''
 
 	return (
-		<thead ref={columnsHead} >
+		<thead>
 			<tr className={draggingReady ? styles.pointerEw : ''}>
 				{cols.map((col, i) => (
 					<th onMouseMove={onMouseMove}
@@ -302,30 +295,32 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 
 //===================================================================================
 
-export interface VirtualTableItem {
+export type VirtualTableItem = {
 	key: any
 }
 
-export interface VirtualTableItems {
+export type VirtualTableItems = {
     count: number
     getItem: (i: number)=>VirtualTableItem
 }
 
-export interface VirtualTableProps {
+export type VirtualTableProps = {
 	columns: Column[]
 	onColumnsChanged: (columns: Column[])=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 	items: VirtualTableItems 
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
+	theme?: string
 }
 
-export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer }: VirtualTableProps) => {
+export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer, theme }: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
 	const [columnHeight, setColumnHeight ] = useState(0)
     const [itemsPerPage, setItemsPerPage ] = useState(0)
     const [position, setPosition] = useState(0)
 	const [itemHeight, setItemHeight] = useState(60)
+	const [innerTheme, setInnerTheme] = useState("")
 
     const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -372,12 +367,16 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	useLayoutEffect(() => {
 		const trh = virtualTable.current!.querySelector("tr")
 		const tr = virtualTable.current!.querySelector("tbody tr")
-		console.log("LE", tr, tr && tr.clientHeight)
 		if (tr && tr.clientHeight)
 			setItemHeight(tr.clientHeight)
 		if (trh && trh.clientHeight)
 			setColumnHeight(trh.clientHeight)
-	}, [items, columnHeight])
+	}, [items, columnHeight, innerTheme])
+
+	useEffect(() => {
+		if (theme)
+			setTimeout(() => setInnerTheme(theme), 150)
+	}, [theme])
 
     const jsxReturner = (item: VirtualTableItem) => (
 		<tr key={item.key}>
@@ -413,7 +412,5 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	)
 }
 
-// TODO: ColumnsHead ref obsolete
-// TODO: ThemeChanged => measure clientHeight
 // TODO: Scrollbar width without limit (change theme)
 // TODO: Scrollbar on/off ... ellipse

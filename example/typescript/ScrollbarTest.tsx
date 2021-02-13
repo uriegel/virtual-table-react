@@ -5,12 +5,12 @@ import { Scrollbar } from 'virtual-table-react'
 
 const itemHeight = 18
 
-interface Items {
+type Items = {
     count: number
     getItem: (i: number)=>string
 }
 
-interface ListBoxProps {
+type ListBoxProps = {
     items: Items,
 }
 

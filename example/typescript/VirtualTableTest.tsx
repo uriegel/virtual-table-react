@@ -9,7 +9,11 @@ interface TableItem extends VirtualTableItem {
     col3: string
 }
 
-export const VirtualTableTest = () => {
+type VirtualTableTestProps = {
+    theme?: string
+}
+
+export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
     const [cols, setCols] = useState([
         { name: "Eine Spalte", isSortable: true }, 
         { name: "Zweite. Spalte" }, 
@@ -37,7 +41,12 @@ export const VirtualTableTest = () => {
             <h1>Virtual Table</h1>
             <button onClick={onChange}>Fill</button>
             <div className='containerVirtualTable'>
-                <VirtualTable columns={cols} onColumnsChanged={onColsChanged} onSort={onSort} items={items} itemRenderer={itemRenderer}/>
+                <VirtualTable 
+                    columns={cols} 
+                    onColumnsChanged={onColsChanged} 
+                    onSort={onSort} items={items} 
+                    itemRenderer={itemRenderer}
+                    theme={theme} />
             </div>
         </div>
     )

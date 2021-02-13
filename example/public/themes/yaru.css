@@ -1,5 +1,6 @@
 :root { 
 	--tablereact-main-background-color: #fcfcfc;
+    --tablereact-selected-color:  #737373;
     --tablereact-table-selected-background-color: #e95420;
 	--tablereact-selected-background-color: #eff0f1;
 	--tablereact-columns-separator-color:  #737373;

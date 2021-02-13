@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import { ColumnsTest } from './ColumnsTest'
 import ScrollbarTest from './ScrollbarTest'
 import {VirtualTableTest} from './VirtualTableTest'
@@ -8,10 +8,11 @@ const App = () => {
     const [theme, setTheme] = useState("")
 
     const onAppChange = (evt: React.ChangeEvent<HTMLSelectElement>) => setAppChoice(evt.target.selectedIndex)
-    const onThemeChange = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+    const onThemeChange = (evt: React.ChangeEvent<HTMLSelectElement>) => 
+        changeTheme(evt.target.selectedIndex == 1 ? "yaru" : "blue")
+
+    const changeTheme = (theme: string) => {
         const styleSheet = document.getElementById("theme")  
-        
-        const theme = evt.target.selectedIndex == 1 ? "yaru" : "blue"
         const head = document.getElementsByTagName('head')[0]
         let link = document.createElement('link')
         link.rel = 'stylesheet'
@@ -24,6 +25,10 @@ const App = () => {
             styleSheet.remove()
         setTheme(theme)
     }
+
+    useLayoutEffect(() => {
+        changeTheme("blue")
+    }, [])
 
     return (
         <div>
@@ -41,8 +46,8 @@ const App = () => {
             {appChoice == 1 
                 ? <ScrollbarTest /> 
                 : (appChoice == 2 
-                    ? <VirtualTableTest />
-                    : <ColumnsTest theme={theme}/>)}
+                    ? <VirtualTableTest theme={theme} />
+                    : <ColumnsTest />)}
         </div>
     )
 }

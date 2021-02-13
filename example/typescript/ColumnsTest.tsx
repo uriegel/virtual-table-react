@@ -6,10 +6,7 @@ import { Column, Columns } from 'virtual-table-react'
 const initialWidthsString = localStorage.getItem("widths")
 const initialWidths = initialWidthsString ? JSON.parse(initialWidthsString) : null
 
-export interface ColumnsTestProps {
-    theme: string
-}
-export const ColumnsTest = ({theme}: ColumnsTestProps) => {
+export const ColumnsTest = () => {
     const [cols, setCols] = useState([
         { name: "Eine Spalte", isSortable: true, width: initialWidths && initialWidths[0] }, 
         { name: "Zweite. Spalte", width: initialWidths && initialWidths[1] }, 
@@ -54,7 +51,6 @@ export const ColumnsTest = ({theme}: ColumnsTestProps) => {
                     onColumnClick={onColumnClick} 
                     onSubItemClick={onSubItemClick}
                     onWidthsChanged={onWidthsChanged}
-                    theme={theme}
                 />
                 <tbody>
                     <tr>
