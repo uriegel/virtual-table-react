@@ -22,12 +22,23 @@ export type ScrollbarProps = {
 	count: number, 
 	position: number, 
 	positionChanged: (pos: number)=>void
+	visibilityChanged?: (vidible: boolean)=>void
 }
 
-export const Scrollbar = ({ height, itemsPerPage, count, position, positionChanged }: ScrollbarProps) => {
+export const Scrollbar = ({ height, itemsPerPage, count, position, positionChanged, visibilityChanged }: ScrollbarProps) => {
 	const scrollbarElement = useRef(null as HTMLInputElement | null)
 	const [timeout, stTimeout] = useState(0)
 	const [interval, stInterval] = useState(0)
+	const [visibility, setVisibility] = useState(false)
+
+	useEffect(() => {
+		const val = getRange(count, itemsPerPage) > 1
+		if (val != visibility) {
+			setVisibility(val)
+			if (visibilityChanged)
+				visibilityChanged(val)
+		}
+	})
 
 	const getGripHeight = (height: number, itemsPerPage: number, totalCount: number) => 
 		scrollbarElement.current
@@ -111,7 +122,7 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 	}
 
 	return (
-		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`}
+		<div className={`${styles.scrollbarContainer} ${visibility ? '' : styles.inactive}`}
 				style={{height: height + 'px'}} >
 			<Triangle onClick={onUp} />
 			<div ref={scrollbarElement} className={styles.scrollbar} 
@@ -378,6 +389,10 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 			setTimeout(() => setInnerTheme(theme), 150)
 	}, [theme])
 
+	const scrollbarVisibilityChanged =(val: boolean) => {
+		console.log("Visi", val)
+	}
+
     const jsxReturner = (item: VirtualTableItem) => (
 		<tr key={item.key}>
 			{itemRenderer(item)}
@@ -421,7 +436,8 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 					itemsPerPage={itemsPerPage} 
 					count={items.count} 
 					position={position}
-					positionChanged={setPosition} />  }
+					positionChanged={setPosition}
+					visibilityChanged={scrollbarVisibilityChanged} />  }
 			</div>
 		</div>
 	)
