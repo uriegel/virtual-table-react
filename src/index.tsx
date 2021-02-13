@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 // @ts-ignore
 import styles from './styles.module.css'
 
@@ -303,8 +303,6 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged, 
 
 //===================================================================================
 
-const itemHeight = 18 // TODO
-
 export interface VirtualTableItem {
 	key: any
 }
@@ -328,6 +326,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	const [columnHeight, setColumnHeight ] = useState(0)
     const [itemsPerPage, setItemsPerPage ] = useState(0)
     const [position, setPosition] = useState(0)
+	const [itemHeight, setItemHeight] = useState(60)
 
     const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -372,6 +371,11 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
         handleResize()
         return () => window.removeEventListener("resize", handleResize)
     })
+
+	useLayoutEffect(() => {
+		console.log("LE")
+		setItemHeight(19)
+	}, [items, columnHeight])
 
     const jsxReturner = (item: VirtualTableItem) => (
 		<tr key={item.key}>
