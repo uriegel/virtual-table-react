@@ -45,7 +45,7 @@ export const ColumnsTest = () => {
                 { name: "Column 1", isSortable: true, subItem: "ext" }, 
                 { name: "2", isSortable: true }, 
                 { name: "3rd Col." }])}>Ändern</button></p>
-            <table>
+            <table className="tabletest">
                 <Columns 
                     cols={cols} 
                     onColumnClick={onColumnClick} 

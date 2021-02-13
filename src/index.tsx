@@ -111,8 +111,8 @@ export const Scrollbar = ({ height, itemsPerPage, count, position, positionChang
 	}
 
 	return (
-		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`}>
-			
+		<div className={`${styles.scrollbarContainer} ${(getRange(count, itemsPerPage) <= 1) ? styles.inactive : ''}`}
+				style={{height: height + 'px'}} >
 			<Triangle onClick={onUp} />
 			<div ref={scrollbarElement} className={styles.scrollbar} 
 				onMouseDown={onPageMouseDown} >
@@ -389,8 +389,21 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 			.keys())        
 			.map(i => jsxReturner(items.getItem(i + position)))
 
+	const onWheel = (sevt: React.WheelEvent) => {
+		const evt = sevt.nativeEvent
+		if (items.count > itemsPerPage) {
+			var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
+			let newPos = position + delta
+			if (newPos < 0)
+				newPos = 0
+			if (newPos > items.count - itemsPerPage) 
+				newPos = items.count - itemsPerPage
+			setPosition(newPos)
+		}        
+	}			
+
 	return (
-		<div className={styles.tableviewRoot} ref={virtualTable}>
+		<div className={styles.tableviewRoot} ref={virtualTable} onWheel={onWheel}>
 			<table className={styles.table}>
 				<Columns 
                     cols={columns} 
@@ -402,15 +415,17 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 					{getItems()}
 				</tbody>
 			</table>
-            {/* <Scrollbar 
-                height={height} 
-                itemsPerPage={itemsPerPage} 
-                count={items.count} 
-                position={position}
-                positionChanged={setPosition} />  */}
+			<div className={styles.tableScrollbar} style={{top: columnHeight + 'px'}}>
+				{ <Scrollbar 
+					height={height} 
+					itemsPerPage={itemsPerPage} 
+					count={items.count} 
+					position={position}
+					positionChanged={setPosition} />  }
+			</div>
 		</div>
 	)
 }
 
-// TODO: Scrollbar width without limit (change theme)
-// TODO: Scrollbar on/off ... ellipse
+// TODO: Scrollbar on/off ... ellipse width
+// TODO: selected item control

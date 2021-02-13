@@ -160,6 +160,11 @@
     table-layout: fixed;
     border-spacing: 0px;
 }
+.tableScrollbar {
+    position: absolute;
+    right: 0px;
+    width: 0px;    
+}
 .table td {
     overflow: hidden;
     text-overflow: ellipsis;

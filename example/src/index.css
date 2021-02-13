@@ -27,20 +27,6 @@ body {
 .container {
 	margin: 0px 55px;
 }
-table {
-	width: 100%;
-	box-sizing: border-box;
-	outline-width: 0px;
-	table-layout: fixed;
-	border-spacing: 0px;
-}
-
-td {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	user-select: none;
-}
 
 .img {
 	width:16px;
@@ -76,4 +62,17 @@ td {
     flex-grow: 1;
     padding: 20px;
     display: flex;
+}
+.tabletest {
+	width: 100%;
+	box-sizing: border-box;
+	outline-width: 0px;
+	table-layout: fixed;
+	border-spacing: 0px;
+}
+.tabletest td {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	user-select: none;
 }
