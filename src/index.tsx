@@ -417,8 +417,46 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 		}        
 	}			
 
+	const onKeyDown = (sevt: React.KeyboardEvent) => {
+		const evt = sevt.nativeEvent
+		switch (evt.which) {
+			case 38:
+				upOne()
+				break
+			case 40:
+				downOne()
+				break
+			default:
+				return
+		}
+		sevt.preventDefault()
+	}
+
+	const upOne = () => calcSelectedIndex(selectedIndex - 1)
+	const downOne = () => calcSelectedIndex(selectedIndex + 1)
+
+	const calcSelectedIndex = (index: number) => {
+		if (index < 0)
+			index = 0
+		else if (index >= items.count)
+			index = items.count - 1
+		setSelectedIndex(index)
+		scrollIntoView(index)		
+	}
+
+	const scrollIntoView = (index: number) => {
+		if (index < position)
+			setPosition(index)
+		if (index > position + itemsPerPage - 1)
+			setPosition(index - itemsPerPage + 1)
+	} 
+
 	return (
-		<div className={styles.tableviewRoot} tabIndex={1} ref={virtualTable} onWheel={onWheel}>
+		<div className={styles.tableviewRoot} 
+			tabIndex={1} 
+			ref={virtualTable} 
+			onKeyDown={onKeyDown}
+			onWheel={onWheel}>
 			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}>
 				<Columns 
                     cols={columns} 
@@ -442,4 +480,6 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 		</div>
 	)
 }
-
+// TODO: Pos1 PosEnd
+// TODO PageDown PageUp
+// TODO: MouseClick selectedItem
