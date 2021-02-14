@@ -178,3 +178,16 @@
 .table.noScrollbar td:last-child {
     padding-right: 0px;
 }
+.isCurrent {
+    outline-color: lightgray;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}
+.tableviewRoot:focus .isCurrent {
+    outline-color: var(--tablereact-item-selected-color);
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+}
+

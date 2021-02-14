@@ -307,7 +307,7 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 //===================================================================================
 
 export type VirtualTableItem = {
-	key: any
+	index: number
 }
 
 export type VirtualTableItems = {
@@ -333,6 +333,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	const [itemHeight, setItemHeight] = useState(60)
 	const [innerTheme, setInnerTheme] = useState("")
 	const [scrollbarActive, setScrollbarActive] = useState(false)
+	const [selectedIndex, setSelectedIndex] = useState(0)
 
     const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -393,7 +394,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	const scrollbarVisibilityChanged =(val: boolean) => setScrollbarActive(val)
 
     const jsxReturner = (item: VirtualTableItem) => (
-		<tr key={item.key}>
+		<tr key={item.index} className={`${item.index == selectedIndex ? styles.isCurrent : ''}`}> 
 			{itemRenderer(item)}
 		</tr> 
 	)
@@ -417,7 +418,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	}			
 
 	return (
-		<div className={styles.tableviewRoot} ref={virtualTable} onWheel={onWheel}>
+		<div className={styles.tableviewRoot} tabIndex={1} ref={virtualTable} onWheel={onWheel}>
 			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}>
 				<Columns 
                     cols={columns} 
@@ -442,5 +443,3 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	)
 }
 
-// TODO: Scrollbar on/off ... ellipse : in theme scrollbarwidth, event scrollbar on/off
-// TODO: selected item control
