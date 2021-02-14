@@ -172,3 +172,9 @@
     user-select: none;
     transition: padding-right .4s;
 }    
+.table td:last-child {
+    padding-right: var(--tablereact-scrollbar-right-margin);
+}
+.table.noScrollbar td:last-child {
+    padding-right: 0px;
+}

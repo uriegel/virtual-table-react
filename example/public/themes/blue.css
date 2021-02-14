@@ -19,4 +19,5 @@
     --tablereact-scrollbar-button-background-color: white;
     --tablereact-scrollbar-button-hover-background-color: rgb(209, 209, 209);
     --tablereact-scrollbar-button-active-background-color: #aaa;
+    --tablereact-scrollbar-right-margin: 16px;
 }

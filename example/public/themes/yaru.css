@@ -9,7 +9,7 @@
     --tablereact-scrollbar-width: 12px;
     --tablereact-scrollbar-border-width: 0px;
     --tablereact-scrollbar-background-color: transparent;
-	--tablereact-scrollbar-background-hover-color: rgb(192, 192, 192);
+	--tablereact-scrollbar-background-hover-color: rgba(192, 192, 192, 0.6);
 	--tablereact-scrollbar-grip-radius: 999px;
     --tablereact-scrollbar-grip-color: gray;    
     --tablereact-scrollbar-grip-hover-color: gray;    
@@ -23,6 +23,7 @@
     --tablereact-scrollbar-button-background-color: white;
     --tablereact-scrollbar-button-hover-background-color: rgb(209, 209, 209);
     --tablereact-scrollbar-button-active-background-color: #aaa;
+    --tablereact-scrollbar-right-margin: 6px;
 }
 body {
     font-size: 80%;

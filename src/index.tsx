@@ -332,6 +332,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
     const [position, setPosition] = useState(0)
 	const [itemHeight, setItemHeight] = useState(60)
 	const [innerTheme, setInnerTheme] = useState("")
+	const [scrollbarActive, setScrollbarActive] = useState(false)
 
     const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -389,9 +390,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 			setTimeout(() => setInnerTheme(theme), 150)
 	}, [theme])
 
-	const scrollbarVisibilityChanged =(val: boolean) => {
-		console.log("Visi", val)
-	}
+	const scrollbarVisibilityChanged =(val: boolean) => setScrollbarActive(val)
 
     const jsxReturner = (item: VirtualTableItem) => (
 		<tr key={item.key}>
@@ -419,7 +418,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 
 	return (
 		<div className={styles.tableviewRoot} ref={virtualTable} onWheel={onWheel}>
-			<table className={styles.table}>
+			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}>
 				<Columns 
                     cols={columns} 
                     onColumnClick={onColumnClick} 
