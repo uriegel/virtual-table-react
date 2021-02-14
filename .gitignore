@@ -24,3 +24,4 @@ src/
 example/src/*.js
 example/src/*d.ts
 
+src/styles.module.css
