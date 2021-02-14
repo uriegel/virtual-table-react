@@ -36,10 +36,15 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
 	    ]
     }
 
+    const onSetFocus = () => {
+        // TODO table set focus with react tools
+    }   
+
     return (
         <div className='rootVirtualTable'>
             <h1>Virtual Table</h1>
             <button onClick={onChange}>Fill</button>
+            <button onClick={onSetFocus}>Set Focus</button>
             <div className='containerVirtualTable'>
                 <VirtualTable 
                     columns={cols} 
