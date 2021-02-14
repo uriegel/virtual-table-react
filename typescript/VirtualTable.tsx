@@ -237,4 +237,3 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	)
 }
 
-// TODO: SelectedItems
