@@ -18,13 +18,14 @@ export type VirtualTableItems = {
 export type VirtualTableProps = {
 	columns: Column[]
 	onColumnsChanged: (columns: Column[])=>void
+	onSelectedIndexChanged?: (index: number)=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 	items: VirtualTableItems 
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 	theme?: string
 }
 
-export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer, theme }: VirtualTableProps) => {
+export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer, theme, onSelectedIndexChanged }: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
 	const [columnHeight, setColumnHeight ] = useState(0)
@@ -120,6 +121,20 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	const onKeyDown = (sevt: React.KeyboardEvent) => {
 		const evt = sevt.nativeEvent
 		switch (evt.which) {
+			case 33:
+				pageUp()
+				break
+			case 34:
+				pageDown()
+				break             			
+			case 35: // End
+				if (!evt.shiftKey)
+					end()
+				break
+				case 36: //Pos1
+				if (!evt.shiftKey)
+					pos1()
+				break			
 			case 38:
 				upOne()
 				break
@@ -132,6 +147,13 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 		sevt.preventDefault()
 	}
 
+	const end = () => calcSelectedIndex(items.count - 1)
+	const pos1 = () => calcSelectedIndex(0)
+	const pageDown = () =>
+	calcSelectedIndex(selectedIndex < items.count - itemsPerPage + 1 
+		? selectedIndex + itemsPerPage - 1
+		: items.count - 1)
+	const pageUp = () => calcSelectedIndex(selectedIndex > itemsPerPage - 1 ? selectedIndex - itemsPerPage + 1: 0)	
 	const upOne = () => calcSelectedIndex(selectedIndex - 1)
 	const downOne = () => calcSelectedIndex(selectedIndex + 1)
 
@@ -141,7 +163,9 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 		else if (index >= items.count)
 			index = items.count - 1
 		setSelectedIndex(index)
-		scrollIntoView(index)		
+		scrollIntoView(index)	
+		if (onSelectedIndexChanged)
+			onSelectedIndexChanged(index)
 	}
 
 	const scrollIntoView = (index: number) => {
@@ -151,13 +175,29 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 			setPosition(index - itemsPerPage + 1)
 	} 
 
+	const onMouseDown = (sevt: React.MouseEvent) => {
+		const evt = sevt.nativeEvent
+		const el = evt.target as HTMLElement
+		const tr = el.closest("tbody tr")
+		if (tr) {
+			const currentIndex = 
+				Array
+					.from(tr.parentElement!.children)
+			 		.findIndex(n => n == tr)
+			 	+ position
+			if (currentIndex != -1)
+			 	calcSelectedIndex(currentIndex)
+		}		
+	}
+
 	return (
 		<div className={styles.tableviewRoot} 
 			tabIndex={1} 
 			ref={virtualTable} 
 			onKeyDown={onKeyDown}
 			onWheel={onWheel}>
-			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}>
+			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}
+				onMouseDown={onMouseDown}>
 				<Columns 
                     cols={columns} 
                     onColumnClick={onColumnClick} 
@@ -180,6 +220,5 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 		</div>
 	)
 }
-// TODO: Pos1 PosEnd
-// TODO PageDown PageUp
-// TODO: MouseClick selectedItem
+
+// TODO: SelectedItems
