@@ -19,11 +19,12 @@
       "resolveJsonModule": true,
       "isolatedModules": false,
       "sourceMap": true,
-      "jsx": "react"
+      "jsx": "react",
+      "outDir": "./src",
       
     },
     "include": [
-      "./src"
+      "./typescript"
     ]
   }
   

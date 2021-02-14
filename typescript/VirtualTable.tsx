@@ -1,0 +1,185 @@
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
+// @ts-ignore
+import styles from './styles.module.css'
+
+import { Scrollbar } from './Scrollbar'
+import { Columns, Column } from './Columns'
+
+
+export type VirtualTableItem = {
+	index: number
+}
+
+export type VirtualTableItems = {
+    count: number
+    getItem: (i: number)=>VirtualTableItem
+}
+
+export type VirtualTableProps = {
+	columns: Column[]
+	onColumnsChanged: (columns: Column[])=>void
+	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
+	items: VirtualTableItems 
+	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
+	theme?: string
+}
+
+export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer, theme }: VirtualTableProps) => {
+	const virtualTable = useRef<HTMLDivElement>(null)
+    const [height, setHeight ] = useState(0)
+	const [columnHeight, setColumnHeight ] = useState(0)
+    const [itemsPerPage, setItemsPerPage ] = useState(0)
+    const [position, setPosition] = useState(0)
+	const [itemHeight, setItemHeight] = useState(60)
+	const [innerTheme, setInnerTheme] = useState("")
+	const [scrollbarActive, setScrollbarActive] = useState(false)
+	const [selectedIndex, setSelectedIndex] = useState(0)
+
+    const onColumnClick = (i: number) =>  {
+		if (columns[i].isSortable) {
+			let newState = [...columns].map((col, j) => {
+                if (i != j)
+                    col.columnsSort = undefined
+                col.subItemSort = undefined
+                return col
+            })
+			newState[i].columnsSort = columns[i].columnsSort == 1 ? 2 : 1
+			onColumnsChanged(newState)
+			onSort(i, columns[i].columnsSort == 2)
+		}	
+	}
+
+    const onSubItemClick = (i: number) => {
+		if (columns[i].isSortable) {
+			let newState = [...columns].map(col => {
+                col.columnsSort = undefined
+                return col
+            })
+			newState[i].subItemSort = columns[i].subItemSort == 1 ? 2 : 1
+			onColumnsChanged(newState)
+			onSort(i, columns[i].columnsSort == 2, true)
+		}	
+	}
+
+	const onWidthsChanged = (w: number[]) => 
+		onColumnsChanged([...columns].map((col, i) => {
+			col.width = w[i]
+			return col
+		}))
+
+    useEffect(() => {
+        const handleResize = () => {
+            setHeight(virtualTable.current!.clientHeight - columnHeight)
+            setItemsPerPage(Math.floor(height / itemHeight))
+        }
+        window.addEventListener("resize", handleResize)
+        handleResize()
+        return () => window.removeEventListener("resize", handleResize)
+    })
+
+	useLayoutEffect(() => {
+		const trh = virtualTable.current!.querySelector("tr")
+		const tr = virtualTable.current!.querySelector("tbody tr")
+		if (tr && tr.clientHeight)
+			setItemHeight(tr.clientHeight)
+		if (trh && trh.clientHeight)
+			setColumnHeight(trh.clientHeight)
+	}, [items, columnHeight, innerTheme])
+
+	useEffect(() => {
+		if (theme)
+			setTimeout(() => setInnerTheme(theme), 150)
+	}, [theme])
+
+	const scrollbarVisibilityChanged =(val: boolean) => setScrollbarActive(val)
+
+    const jsxReturner = (item: VirtualTableItem) => (
+		<tr key={item.index} className={`${item.index == selectedIndex ? styles.isCurrent : ''}`}> 
+			{itemRenderer(item)}
+		</tr> 
+	)
+    
+    const getItems = () => 
+        Array.from(Array(Math.min(itemsPerPage, items.count - position))
+			.keys())        
+			.map(i => jsxReturner(items.getItem(i + position)))
+
+	const onWheel = (sevt: React.WheelEvent) => {
+		const evt = sevt.nativeEvent
+		if (items.count > itemsPerPage) {
+			var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
+			let newPos = position + delta
+			if (newPos < 0)
+				newPos = 0
+			if (newPos > items.count - itemsPerPage) 
+				newPos = items.count - itemsPerPage
+			setPosition(newPos)
+		}        
+	}			
+
+	const onKeyDown = (sevt: React.KeyboardEvent) => {
+		const evt = sevt.nativeEvent
+		switch (evt.which) {
+			case 38:
+				upOne()
+				break
+			case 40:
+				downOne()
+				break
+			default:
+				return
+		}
+		sevt.preventDefault()
+	}
+
+	const upOne = () => calcSelectedIndex(selectedIndex - 1)
+	const downOne = () => calcSelectedIndex(selectedIndex + 1)
+
+	const calcSelectedIndex = (index: number) => {
+		if (index < 0)
+			index = 0
+		else if (index >= items.count)
+			index = items.count - 1
+		setSelectedIndex(index)
+		scrollIntoView(index)		
+	}
+
+	const scrollIntoView = (index: number) => {
+		if (index < position)
+			setPosition(index)
+		if (index > position + itemsPerPage - 1)
+			setPosition(index - itemsPerPage + 1)
+	} 
+
+	return (
+		<div className={styles.tableviewRoot} 
+			tabIndex={1} 
+			ref={virtualTable} 
+			onKeyDown={onKeyDown}
+			onWheel={onWheel}>
+			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}>
+				<Columns 
+                    cols={columns} 
+                    onColumnClick={onColumnClick} 
+                    onSubItemClick={onSubItemClick}
+                    onWidthsChanged={onWidthsChanged}
+                />
+                <tbody>
+					{getItems()}
+				</tbody>
+			</table>
+			<div className={styles.tableScrollbar} style={{top: columnHeight + 'px'}}>
+				{ <Scrollbar 
+					height={height} 
+					itemsPerPage={itemsPerPage} 
+					count={items.count} 
+					position={position}
+					positionChanged={setPosition}
+					visibilityChanged={scrollbarVisibilityChanged} />  }
+			</div>
+		</div>
+	)
+}
+// TODO: Pos1 PosEnd
+// TODO PageDown PageUp
+// TODO: MouseClick selectedItem

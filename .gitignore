@@ -20,8 +20,7 @@ dist
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-src/index.d.ts
-src/index.js
-src/index.js.map
+src/
 example/src/*.js
 example/src/*d.ts
+
