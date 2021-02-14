@@ -23,9 +23,11 @@ export type VirtualTableProps = {
 	items: VirtualTableItems 
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 	theme?: string
+	focused?: boolean
+	onFocused?: (focused: boolean)=>void
 }
 
-export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer, theme, onSelectedIndexChanged }: VirtualTableProps) => {
+export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer, theme, onSelectedIndexChanged, focused, onFocused }: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
 	const [columnHeight, setColumnHeight ] = useState(0)
@@ -62,11 +64,13 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 		}	
 	}
 
-	const onWidthsChanged = (w: number[]) => 
+	const onWidthsChanged = (w: number[]) => {
+		virtualTable.current?.focus()
 		onColumnsChanged([...columns].map((col, i) => {
 			col.width = w[i]
 			return col
 		}))
+	}
 
     useEffect(() => {
         const handleResize = () => {
@@ -77,6 +81,11 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
         handleResize()
         return () => window.removeEventListener("resize", handleResize)
     })
+
+	useEffect(() => {
+		if (focused)
+			virtualTable.current?.focus()
+	}, [ focused])
 
 	useLayoutEffect(() => {
 		const trh = virtualTable.current!.querySelector("tr")
@@ -190,10 +199,17 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 		}		
 	}
 
+	const onFocus = (isFocused: boolean) => {
+		if (onFocused)
+			onFocused(isFocused)
+	}
+
 	return (
 		<div className={styles.tableviewRoot} 
-			tabIndex={1} 
+			tabIndex={1}
 			ref={virtualTable} 
+			onFocus={()=>onFocus(true)}
+			onBlur={()=>onFocus(false)}
 			onKeyDown={onKeyDown}
 			onWheel={onWheel}>
 			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}

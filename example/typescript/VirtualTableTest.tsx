@@ -19,6 +19,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         { name: "Zweite. Spalte" }, 
         { name: "Letzte Spalte", isSortable: true }
     ] as Column[])
+    const [focused, setFocused] = useState(false)
     const [items, setItems ] = useState({count: 0, getItem: (i: number)=>{}} as VirtualTableItems)
 
     const onColsChanged = (cols: Column[])=> {}
@@ -37,8 +38,10 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
     }
 
     const onSetFocus = () => {
-        // TODO table set focus with react tools
+        setFocused(true)
     }   
+
+    const onFocused = (val: boolean) => setFocused(val)
 
     return (
         <div className='rootVirtualTable'>
@@ -51,7 +54,9 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} items={items} 
                     itemRenderer={itemRenderer}
-                    theme={theme} />
+                    theme={theme}
+                    focused={focused}
+                    onFocused={onFocused} />
             </div>
         </div>
     )
