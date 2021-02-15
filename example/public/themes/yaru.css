@@ -1,8 +1,9 @@
 :root { 
 	--tablereact-main-background-color: #fcfcfc;
     --tablereact-selected-color:  #737373;
-    --tablereact-table-selected-background-color: #e95420;
-	--tablereact-selected-background-color: #eff0f1;
+    --tablereact-selected-background-color: #eff0f1;
+	--tablereact-is-selected-color:  white;
+	--tablereact-is-selected-background-color: #e95420;
 	--tablereact-columns-separator-color:  #737373;
 	--tablereact-selected-background-hover-color: #e2e2e2;
     --tablereact-item-selected-color: #494646;
@@ -14,7 +15,7 @@
 	--tablereact-scrollbar-grip-radius: 999px;
     --tablereact-scrollbar-grip-color: gray;    
     --tablereact-scrollbar-grip-hover-color: gray;    
-    --tablereact-scrollbar-grip-active-color: var(--tablereact-table-selected-background-color);    
+    --tablereact-scrollbar-grip-active-color: var(--tablereact-is-selected-background-color);    
 	--tablereact-scrollbar-grip-width: 4px; 
 	--tablereact-scrollbar-grip-right: 1px; 
     --tablereact-scrollbar-button-display: none; 

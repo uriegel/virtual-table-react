@@ -178,6 +178,10 @@
 .table.noScrollbar td:last-child {
     padding-right: 0px;
 }
+.table tr.isSelected {
+    color: var(--tablereact-is-selected-color);
+    background-color: var(--tablereact-is-selected-background-color);
+}
 .isCurrent {
     outline-color: lightgray;
     outline-width: 1px;

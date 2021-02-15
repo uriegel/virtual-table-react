@@ -2,6 +2,8 @@
 	--tablereact-main-background-color: white;
 	--tablereact-selected-color:  white;
 	--tablereact-selected-background-color: blue;
+	--tablereact-is-selected-color:  white;
+	--tablereact-is-selected-background-color: blue;
 	--tablereact-columns-separator-color:  white;
 	--tablereact-selected-background-hover-color: #0063ff;
     --tablereact-item-selected-color: red;

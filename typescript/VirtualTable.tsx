@@ -8,6 +8,7 @@ import { Columns, Column } from './Columns'
 
 export type VirtualTableItem = {
 	index: number
+	isSelected?: boolean
 }
 
 export type VirtualTableItems = {
@@ -106,7 +107,8 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, theme, 
 	const scrollbarVisibilityChanged =(val: boolean) => setScrollbarActive(val)
 
     const jsxReturner = (item: VirtualTableItem) => (
-		<tr key={item.index} className={`${item.index == selectedIndex ? styles.isCurrent : ''}`}> 
+		<tr key={item.index} 
+			className={`${item.index == selectedIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
 			{items.itemRenderer(item)}
 		</tr> 
 	)
