@@ -76,6 +76,8 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
         const handleResize = () => {
             setHeight(virtualTable.current!.clientHeight - columnHeight)
             setItemsPerPage(Math.floor(height / itemHeight))
+			if (items.count - position < itemsPerPage)
+				setPosition(Math.max(0, items.count - itemsPerPage))
         }
         window.addEventListener("resize", handleResize)
         handleResize()
@@ -110,7 +112,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 	)
     
     const getItems = () => 
-        Array.from(Array(Math.min(itemsPerPage, items.count - position))
+        Array.from(Array(Math.min(itemsPerPage + 1, items.count - position))
 			.keys())        
 			.map(i => jsxReturner(items.getItem(i + position)))
 

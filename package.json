@@ -16,9 +16,7 @@
   ],
   "scripts": {
     "start": "copyfiles -f  typescript/styles.module.css src && tsc && microbundle-crl watch --no-compress --format modern,cjs",
-    "build": "copyfiles -f  typescript/styles.module.css src && tsc && microbundle-crl --no-compress --format modern,cjs && copyfiles -f  src/index.d.ts dist",
-    "prepare": "run-s build",
-    "predeploy": "cd example && npm install && npm run build"
+    "build": "copyfiles -f  typescript/styles.module.css src && tsc && microbundle-crl --no-compress --format modern,cjs && copyfiles -f  src/index.d.ts dist"
   },
   "peerDependencies": {
     "react": "^17.0.0"
