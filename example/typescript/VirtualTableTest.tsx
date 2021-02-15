@@ -26,7 +26,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
     const onSort = ()=> {}
 
     const getItem = (index: number) => ({ col1: `Name ${index}`, col2: `Adresse ${index}`, col3: `Größe ${index}`, index: index} as TableItem)
-    const onChange = () => setItems({count: 30, getItem})
+    const onChange = () => setItems({count: 30, getItem, itemRenderer})
     
     const itemRenderer = (item: VirtualTableItem) => {
         const tableItem = item as TableItem
@@ -53,7 +53,6 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     columns={cols} 
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} items={items} 
-                    itemRenderer={itemRenderer}
                     theme={theme}
                     focused={focused}
                     onFocused={onFocused} />

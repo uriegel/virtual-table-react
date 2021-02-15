@@ -13,6 +13,7 @@ export type VirtualTableItem = {
 export type VirtualTableItems = {
     count: number
     getItem: (i: number)=>VirtualTableItem
+	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 }
 
 export type VirtualTableProps = {
@@ -21,13 +22,12 @@ export type VirtualTableProps = {
 	onSelectedIndexChanged?: (index: number)=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 	items: VirtualTableItems 
-	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 	theme?: string
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
 }
 
-export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRenderer, theme, onSelectedIndexChanged, focused, onFocused }: VirtualTableProps) => {
+export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, theme, onSelectedIndexChanged, focused, onFocused }: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
 	const [columnHeight, setColumnHeight ] = useState(0)
@@ -107,7 +107,7 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, itemRen
 
     const jsxReturner = (item: VirtualTableItem) => (
 		<tr key={item.index} className={`${item.index == selectedIndex ? styles.isCurrent : ''}`}> 
-			{itemRenderer(item)}
+			{items.itemRenderer(item)}
 		</tr> 
 	)
     
