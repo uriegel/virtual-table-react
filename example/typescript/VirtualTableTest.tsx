@@ -21,7 +21,12 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
     ] as Column[])
     const [focused, setFocused] = useState(false)
     const [items, setItems ] = useState({count: 0, getItem: (i: number)=>{}} as VirtualTableItems)
+    const [currentIndex, setCurrentIndex] = useState(0)
 
+    useEffect(() => {
+
+    }, [ currentIndex ])
+    
     const onColsChanged = (cols: Column[])=> {}
     const onSort = ()=> {}
 
@@ -60,7 +65,9 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     onSort={onSort} items={items} 
                     theme={theme}
                     focused={focused}
-                    onFocused={onFocused} />
+                    onFocused={onFocused}
+                    currentIndex={currentIndex}
+                    onCurrentIndexChanged={setCurrentIndex} />
             </div>
         </div>
     )

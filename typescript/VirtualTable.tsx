@@ -20,15 +20,26 @@ export type VirtualTableItems = {
 export type VirtualTableProps = {
 	columns: Column[]
 	onColumnsChanged: (columns: Column[])=>void
-	onSelectedIndexChanged?: (index: number)=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 	items: VirtualTableItems 
 	theme?: string
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
+	currentIndex?: number
+	onCurrentIndexChanged?: (index: number)=>void
 }
 
-export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, theme, onSelectedIndexChanged, focused, onFocused }: VirtualTableProps) => {
+export const VirtualTable = ({ 
+		columns, 
+		onColumnsChanged, 
+		onSort, 
+		items, 
+		theme, 
+		focused, 
+		onFocused,
+		currentIndex,
+		onCurrentIndexChanged
+ 	}: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
 	const [columnHeight, setColumnHeight ] = useState(0)
@@ -89,6 +100,8 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, theme, 
 		if (focused)
 			virtualTable.current?.focus()
 	}, [ focused])
+
+	useEffect(() => calcSelectedIndex(currentIndex!), [ currentIndex ])
 
 	useLayoutEffect(() => {
 		const trh = virtualTable.current!.querySelector("tr")
@@ -171,14 +184,17 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, theme, 
 	const downOne = () => calcSelectedIndex(selectedIndex + 1)
 
 	const calcSelectedIndex = (index: number) => {
-		if (index < 0)
-			index = 0
-		else if (index >= items.count)
-			index = items.count - 1
-		setSelectedIndex(index)
-		scrollIntoView(index)	
-		if (onSelectedIndexChanged)
-			onSelectedIndexChanged(index)
+		if (items.count > 0) {
+			if (index < 0)
+				index = 0
+			else if (index >= items.count)
+				index = items.count - 1
+			const changes = index != selectedIndex
+			setSelectedIndex(index)
+			scrollIntoView(index)	
+			if (changes && onCurrentIndexChanged)
+				onCurrentIndexChanged(index)
+		}
 	}
 
 	const scrollIntoView = (index: number) => {
@@ -240,4 +256,3 @@ export const VirtualTable = ({ columns, onColumnsChanged, onSort, items, theme, 
 		</div>
 	)
 }
-
