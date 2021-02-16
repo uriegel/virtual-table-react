@@ -121,9 +121,7 @@ export const VirtualTable = ({
 			setColumnHeight(trh.clientHeight)
 	}
 
-	useLayoutEffect(() => setHeights(), [columnHeight, innerTheme])
-
-	useLayoutEffect(() => setHeights(), [items, getItems])
+	useLayoutEffect(() => setHeights(), [items, getItems, columnHeight, innerTheme])
 
 	useEffect(() => {
 		setPosition(0)
