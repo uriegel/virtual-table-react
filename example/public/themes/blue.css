@@ -12,6 +12,7 @@
     --tablereact-scrollbar-border-width: 1px;
     --tablereact-scrollbar-background-color: azure;
     --tablereact-scrollbar-border-color: gray;
+    --tablereact-scrollbar-background-hover-color: azure;
     --tablereact-scrollbar-grip-color: rgb(209, 209, 209);
     --tablereact-scrollbar-grip-hover-color: #bbb;
     --tablereact-scrollbar-grip-active-color: #999;
