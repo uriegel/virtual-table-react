@@ -97,7 +97,6 @@ export const VirtualTable = ({
         const handleResize = () => {
             setHeight(virtualTable.current!.clientHeight - columnHeight)
             setItemsPerPage(Math.floor(height / itemHeight))
-			console.log("getItems?.count", getItems?.count)
 			if (getItemsCount() - position < itemsPerPage)
 				setPosition(Math.max(0, getItemsCount() - itemsPerPage))
         }
@@ -124,10 +123,11 @@ export const VirtualTable = ({
 
 	useLayoutEffect(() => setHeights(), [columnHeight, innerTheme])
 
-	useLayoutEffect(() => {
+	useLayoutEffect(() => setHeights(), [items, getItems])
+
+	useEffect(() => {
 		setPosition(0)
 		setSelectedIndex(0)
-		setHeights()
 	}, [items, getItems])
 
 	useEffect(() => {
@@ -145,7 +145,7 @@ export const VirtualTable = ({
 	)
     
     const renderItems = () => 
-        Array.from(Array(Math.min(itemsPerPage + 1, getItemsCount() - position))
+        Array.from(Array(Math.min(itemsPerPage + 1, Math.max(getItemsCount() - position, 0)))
 			.keys())        
 			.map(i => jsxReturner(items ? items.items[i + position] : getItems!.getItem(i + position)))
 
