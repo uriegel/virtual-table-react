@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
 import 'virtual-table-react/dist/index.css'
 
 import { 
@@ -70,6 +70,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} 
                     state={state}
+                    onStateChanged={s => setState(s)}
                     theme={theme}
                     focused={focused}
                     onFocused={onFocused}
