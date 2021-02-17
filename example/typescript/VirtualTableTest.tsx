@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react'
 import 'virtual-table-react/dist/index.css'
 
-import { Column, VirtualTable, VirtualTableItems, VirtualTableGetItems, VirtualTableItem } from 'virtual-table-react'
+import { 
+    Column, 
+    VirtualTable, 
+    VirtualTableItem, 
+    createVirtualTableState,
+    changeVirtualTableState
+} from 'virtual-table-react'
 
 interface TableItem extends VirtualTableItem {
     col1: string
@@ -20,13 +26,8 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         { name: "Letzte Spalte", isSortable: true }
     ] as Column[])
     const [focused, setFocused] = useState(false)
-    const [getItems, setGetItems ] = useState({count: 0, getItem: (i: number)=>{}} as VirtualTableGetItems)
-    const [items, setItems ] = useState({items: [] as VirtualTableItem[]} as VirtualTableItems)
+    const [state, setState ] = useState(createVirtualTableState({items: [] as VirtualTableItem[], itemRenderer: i=>[]}))
     const [currentIndex, setCurrentIndex] = useState(0)
-
-    useEffect(() => {
-
-    }, [ currentIndex ])
     
     const onColsChanged = (cols: Column[])=> {}
     const onSort = ()=> {}
@@ -37,20 +38,12 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         col3: `Größe ${index}`, 
         index: index, 
         isSelected: index == 4 || index == 7 || index == 8 } as TableItem)
-    const onChange = () => {
 
-//        setTimeout(() => setItems({items: Array.from(Array(20).keys()).map(index => getItem(index)), itemRenderer}), 10)
-        setItems({items: Array.from(Array(20).keys()).map(index => getItem(index)), itemRenderer})
-
-        // setItems({items: [] as VirtualTableItem[]} as VirtualTableItems)
-        // setGetItems({count: 0, getItem: (i: number)=>{}} as VirtualTableGetItems) 
-        // setTimeout(() => setGetItems({count: 30, getItem, itemRenderer}), 10)
-    }
-    const onChangeArray = () => {
-        // setItems({items: [] as VirtualTableItem[]} as VirtualTableItems)
-        // setGetItems({count: 0, getItem: (i: number)=>{}} as VirtualTableGetItems) 
-        setItems({items: Array.from(Array(60).keys()).map(index => getItem(index)), itemRenderer})
-    }
+    const onChange = () => 
+        setState(changeVirtualTableState(state, {items: Array.from(Array(20).keys()).map(index => getItem(index)), itemRenderer}))
+    
+    const onChangeArray = () => 
+        setState(changeVirtualTableState(state, {items: Array.from(Array(60).keys()).map(index => getItem(index)), itemRenderer}))
     
     const itemRenderer = (item: VirtualTableItem) => {
         const tableItem = item as TableItem
@@ -61,9 +54,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
 	    ]
     }
 
-    const onSetFocus = () => {
-        setFocused(true)
-    }   
+    const onSetFocus = () => setFocused(true)   
 
     const onFocused = (val: boolean) => setFocused(val)
 
@@ -78,8 +69,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     columns={cols} 
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} 
-                    items={items.items.length ? items : undefined}
-                    getItems={getItems.count ? getItems : undefined} 
+                    state={state}
                     theme={theme}
                     focused={focused}
                     onFocused={onFocused}

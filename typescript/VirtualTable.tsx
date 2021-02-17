@@ -5,29 +5,44 @@ import styles from './styles.module.css'
 import { Scrollbar } from './Scrollbar'
 import { Columns, Column } from './Columns'
 
-
 export type VirtualTableItem = {
 	index: number
 	isSelected?: boolean
 }
 
-export type VirtualTableItems = {
-	items: VirtualTableItem[]
+export type VirtualTableItemIndexer = {
+    count: number
+    getItem: (i: number)=>VirtualTableItem
+}
+
+export interface VirtualTableState {
+	// TODO items: VirtualTableItem[] | VirtualTableItemIndexer
+	items: VirtualTableItem[] 
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 }
 
-export type VirtualTableGetItems = {
-    count: number
-    getItem: (i: number)=>VirtualTableItem
+type VirtualTableStateType = {
+	// Interface VirtualTableState
+	// TODO items: VirtualTableItem[] | VirtualTableItemIndexer
+	items: VirtualTableItem[] 
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 }
+
+export const createVirtualTableState = (state: VirtualTableState) => ({
+	items: state.items,
+	itemRenderer: state.itemRenderer
+})
+
+export const changeVirtualTableState = (currentState: VirtualTableStateType, newState: VirtualTableState) => ({
+	items: newState.items,
+	itemRenderer: newState.itemRenderer
+})
 
 export type VirtualTableProps = {
 	columns: Column[]
 	onColumnsChanged: (columns: Column[])=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
-	items?: VirtualTableItems 
-	getItems?: VirtualTableGetItems 
+	state: VirtualTableStateType 
 	theme?: string
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
@@ -36,11 +51,10 @@ export type VirtualTableProps = {
 }
 
 export const VirtualTable = ({ 
+		state,
 		columns, 
 		onColumnsChanged, 
 		onSort, 
-		items, 
-		getItems,
 		theme, 
 		focused, 
 		onFocused,
@@ -71,7 +85,7 @@ export const VirtualTable = ({
 		}	
 	}
 
-	const getItemsCount = () => items ? items.items.length : getItems?.count ?? 0
+	const getItemsCount = () => state.items.length
 
     const onSubItemClick = (i: number) => {
 		if (columns[i].isSortable) {
@@ -121,12 +135,12 @@ export const VirtualTable = ({
 			setColumnHeight(trh.clientHeight)
 	}
 
-	useLayoutEffect(() => setHeights(), [items, getItems, columnHeight, innerTheme])
+	useLayoutEffect(() => setHeights(), [state, columnHeight, innerTheme])
 
 	useEffect(() => {
 		setPosition(0)
 		setSelectedIndex(0)
-	}, [items, getItems])
+	}, [state])
 
 	useEffect(() => {
 		if (theme)
@@ -138,14 +152,14 @@ export const VirtualTable = ({
     const jsxReturner = (item: VirtualTableItem) => (
 		<tr key={item.index} 
 			className={`${item.index == selectedIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
-			{items ? items.itemRenderer(item) : getItems?.itemRenderer(item) ?? null}
+			{state.itemRenderer(item)}
 		</tr> 
 	)
     
     const renderItems = () => 
         Array.from(Array(Math.min(itemsPerPage + 1, Math.max(getItemsCount() - position, 0)))
 			.keys())        
-			.map(i => jsxReturner(items ? items.items[i + position] : getItems!.getItem(i + position)))
+			.map(i => jsxReturner(state.items[i + position]))
 
 	const onWheel = (sevt: React.WheelEvent) => {
 		const evt = sevt.nativeEvent
