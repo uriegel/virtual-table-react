@@ -5,8 +5,7 @@ import {
     Column, 
     VirtualTable, 
     VirtualTableItem, 
-    createVirtualTableState,
-    changeVirtualTableState
+    setVirtualTableItems
 } from 'virtual-table-react'
 
 interface TableItem extends VirtualTableItem {
@@ -26,7 +25,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         { name: "Letzte Spalte", isSortable: true }
     ] as Column[])
     const [focused, setFocused] = useState(false)
-    const [state, setState ] = useState(createVirtualTableState({items: [] as VirtualTableItem[], itemRenderer: i=>[]}))
+    const [items, setItems ] = useState(setVirtualTableItems({items: [] as VirtualTableItem[], itemRenderer: i=>[]}))
     const [currentIndex, setCurrentIndex] = useState(0)
     
     const onColsChanged = (cols: Column[])=> {}
@@ -40,10 +39,12 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         isSelected: index == 4 || index == 7 || index == 8 } as TableItem)
 
     const onChange = () => 
-        setState(changeVirtualTableState(state, {items: Array.from(Array(20).keys()).map(index => getItem(index)), itemRenderer}))
+        setItems(setVirtualTableItems({items: Array.from(Array(20).keys()).map(index => getItem(index)), itemRenderer}))
+    
     
     const onChangeArray = () => 
-        setState(changeVirtualTableState(state, {items: Array.from(Array(60).keys()).map(index => getItem(index)), itemRenderer}))
+        setItems(setVirtualTableItems({items: Array.from(Array(60).keys()).map(index => getItem(index)), itemRenderer}))
+    
     
     const itemRenderer = (item: VirtualTableItem) => {
         const tableItem = item as TableItem
@@ -69,13 +70,11 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     columns={cols} 
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} 
-                    state={state}
-                    onStateChanged={s => setState(s)}
+                    items={items}
+                    onItemsChanged ={setVirtualTableItems}
                     theme={theme}
                     focused={focused}
-                    onFocused={onFocused}
-                    currentIndex={currentIndex}
-                    onCurrentIndexChanged={setCurrentIndex} />
+                    onFocused={onFocused} />
             </div>
         </div>
     )

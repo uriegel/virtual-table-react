@@ -3,8 +3,7 @@ export { Columns, Column } from './Columns'
 export { 
     VirtualTable, 
     VirtualTableItem, 
-    VirtualTableState, 
-    createVirtualTableState, 
-    changeVirtualTableState 
+    VirtualTableItems, 
+    setVirtualTableItems 
 } from './VirtualTable'
 
