@@ -105,20 +105,20 @@ export const VirtualTable = ({
 		}))
 	}
 
-    useEffect(() => {
-        const handleResize = () => {
-			const height = virtualTable.current!.clientHeight - columnHeight
-            setHeight(height)
-			if (height && itemHeight)
-	 			setItemsPerPage(Math.floor(height / itemHeight))
-// //	 		if (getItemsCount(state) - state.position < state.itemsPerPage)
-// 	// 			state.position = validatePosition(getItemsCount(state) - state.itemsPerPage, state)
-	// 		onStateChanged(changeVirtualTableInternalState(state))
-        }
+	const handleResize = () => {
+		const height = virtualTable.current!.clientHeight - columnHeight
+		setHeight(height)
+		if (height && itemHeight)
+			 setItemsPerPage(Math.floor(height / itemHeight))
+		if (getItemsCount(items) - scrollPosition < itemsPerPage) {
+			setScrollPosition(Math.max(0, getItemsCount(items) - itemsPerPage))
+		}
+	}
+	useEffect(() => handleResize(), [])
+   	useEffect(() => {
         window.addEventListener("resize", handleResize)
-        handleResize()
         return () => window.removeEventListener("resize", handleResize)
-    }, [itemHeight])
+    }, [itemHeight, items, itemsPerPage, scrollPosition])
 
 	useEffect(() => {
 		if (focused)
@@ -263,9 +263,8 @@ export const VirtualTable = ({
 		}
 	}
 
-	// TODO: ScrollIntoView when resizing
-	// TODO: ScrollIntoView when items changed
 	// TODO: ScrollIntoView when theme changed
+	// TODO: ScrollIntoView when items changed
 
 	return (
 		<div className={styles.tableviewRoot} 
