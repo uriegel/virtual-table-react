@@ -43,7 +43,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
     
     
     const onChangeArray = () => 
-        setItems(setVirtualTableItems({items: Array.from(Array(60).keys()).map(index => getItem(index)), itemRenderer}))
+        setItems(setVirtualTableItems({items: Array.from(Array(60).keys()).map(index => getItem(index)), itemRenderer, currentIndex: 45}))
     
     
     const itemRenderer = (item: VirtualTableItem) => {

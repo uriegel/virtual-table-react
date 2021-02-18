@@ -71,6 +71,15 @@ export const VirtualTable = ({
 	const [scrollbarActive, setScrollbarActive] = useState(false)
 	const [scrollPosition, setScrollPosition] = useState(0)
 
+	const previousCurrentIndex = useRef(0)
+	useEffect(() => {
+		if (previousCurrentIndex.current != items.currentIndex ?? 0) {
+			previousCurrentIndex.current = items.currentIndex ?? 0
+			scrollIntoView(previousCurrentIndex.current)	
+		}
+	}, [items])
+	previousCurrentIndex
+
 	const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
 			let newState = [...columns].map((col, j) => {
@@ -214,7 +223,6 @@ export const VirtualTable = ({
 	const setCurrentIndex = (index?: number) => {
 		const i = validateCurrentIndex(items, index)
 		if (i != items.currentIndex) {
-			scrollIntoView(i)	
 			onItemsChanged({
 				itemRenderer: items.itemRenderer,
 				items: items.items,
@@ -264,8 +272,6 @@ export const VirtualTable = ({
 				.map(i => jsxReturner(items.items[i + scrollPosition]))
 		}
 	}
-
-	// TODO: ScrollIntoView when items changed
 
 	return (
 		<div className={styles.tableviewRoot} 
