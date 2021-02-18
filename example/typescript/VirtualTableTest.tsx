@@ -5,7 +5,8 @@ import {
     Column, 
     VirtualTable, 
     VirtualTableItem, 
-    setVirtualTableItems
+    setVirtualTableItems,
+    VirtualTableItems
 } from 'virtual-table-react'
 
 interface TableItem extends VirtualTableItem {
@@ -25,9 +26,8 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         { name: "Letzte Spalte", isSortable: true }
     ] as Column[])
     const [focused, setFocused] = useState(false)
-    const [items, setItems ] = useState(setVirtualTableItems({items: [] as VirtualTableItem[], itemRenderer: i=>[]}))
-    const [currentIndex, setCurrentIndex] = useState(0)
-    
+    const [items, setItems ] = useState(setVirtualTableItems({items: [] as VirtualTableItem[], itemRenderer: i=>[]}) as VirtualTableItems)
+        
     const onColsChanged = (cols: Column[])=> {}
     const onSort = ()=> {}
 
@@ -71,7 +71,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} 
                     items={items}
-                    onItemsChanged ={setVirtualTableItems}
+                    onItemsChanged ={setItems}
                     theme={theme}
                     focused={focused}
                     onFocused={onFocused} />
