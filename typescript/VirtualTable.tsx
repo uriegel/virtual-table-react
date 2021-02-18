@@ -263,6 +263,10 @@ export const VirtualTable = ({
 		}
 	}
 
+	// TODO: ScrollIntoView when resizing
+	// TODO: ScrollIntoView when items changed
+	// TODO: ScrollIntoView when theme changed
+
 	return (
 		<div className={styles.tableviewRoot} 
 			tabIndex={1}
