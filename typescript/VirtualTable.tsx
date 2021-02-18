@@ -110,9 +110,8 @@ export const VirtualTable = ({
 		setHeight(height)
 		if (height && itemHeight)
 			 setItemsPerPage(Math.floor(height / itemHeight))
-		if (getItemsCount(items) - scrollPosition < itemsPerPage) {
+		if (getItemsCount(items) - scrollPosition < itemsPerPage) 
 			setScrollPosition(Math.max(0, getItemsCount(items) - itemsPerPage))
-		}
 	}
 	useEffect(() => handleResize(), [])
    	useEffect(() => {
@@ -125,7 +124,7 @@ export const VirtualTable = ({
 			virtualTable.current?.focus()
 	}, [ focused])
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		const trh = virtualTable.current!.querySelector("tr")
 		if (trh && trh.clientHeight) {
 			setColumnHeight(trh.clientHeight)
@@ -135,7 +134,10 @@ export const VirtualTable = ({
 	 		if (tr && tr.clientHeight) {
 				const itemHeight = tr.clientHeight
 	 			setItemHeight(itemHeight)
-				setItemsPerPage(Math.floor(height / itemHeight))
+				const itemsPerPage = Math.floor(height / itemHeight)
+				setItemsPerPage(itemsPerPage)
+				if (getItemsCount(items) - scrollPosition < itemsPerPage) 
+					setScrollPosition(Math.max(0, getItemsCount(items) - itemsPerPage))
 			}
 		}
 	}, [ innerTheme ])
@@ -263,7 +265,6 @@ export const VirtualTable = ({
 		}
 	}
 
-	// TODO: ScrollIntoView when theme changed
 	// TODO: ScrollIntoView when items changed
 
 	return (
