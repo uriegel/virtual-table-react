@@ -68,13 +68,12 @@ export const VirtualTable = ({
 	const [scrollPosition, setScrollPosition] = useState(0)
 
 	const previousCurrentIndex = useRef(0)
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (previousCurrentIndex.current != items.currentIndex ?? 0) {
 			previousCurrentIndex.current = items.currentIndex ?? 0
 			scrollIntoView(previousCurrentIndex.current)	
 		}
 	}, [items])
-	previousCurrentIndex
 
 	const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -129,7 +128,13 @@ export const VirtualTable = ({
 			virtualTable.current?.focus()
 	}, [ focused])
 
-	useEffect(() => {
+	useLayoutEffect(() => {
+		previousCurrentIndex.current = 0
+		setScrollPosition(0)
+		onItemsChanged(setVirtualTableItems(items))
+	}, [itemHeight, itemsPerPage])
+
+	useLayoutEffect(() => {
 		const trh = virtualTable.current!.querySelector("thead tr")
 		setColumnHeight(trh?.clientHeight ?? 0)
 		const height = virtualTable.current!.clientHeight - (trh?.clientHeight ?? 0)
@@ -144,7 +149,7 @@ export const VirtualTable = ({
 				setScrollPosition(Math.max(0, items.count - itemsPerPage))
 		}
 	}, [ innerTheme ])
-	useEffect(() => {
+	useLayoutEffect(() => {
 		if (theme)
 			setTimeout(() => setInnerTheme(theme), 150)
 	}, [theme])
@@ -301,6 +306,3 @@ export const VirtualTable = ({
 		</div>
 	)
 }
-
-// TODO: major change
-// TODO: initial setItems #2: position too high
