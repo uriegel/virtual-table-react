@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import 'virtual-table-react/dist/index.css'
 
 import { 
@@ -25,9 +25,14 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         { name: "Zweite. Spalte" }, 
         { name: "Letzte Spalte", isSortable: true }
     ] as Column[])
+
+    const getTableItem = (i: number) => tableItems.current[i]
+
     const [focused, setFocused] = useState(false)
-    const [items, setItems ] = useState(setVirtualTableItems({items: [] as VirtualTableItem[], itemRenderer: i=>[]}) as VirtualTableItems)
+    const [items, setItems ] = useState(setVirtualTableItems({count: 0, getItem: getTableItem, itemRenderer: i=>[]}) as VirtualTableItems)
         
+    const tableItems = useRef([] as VirtualTableItem[])
+
     const onColsChanged = (cols: Column[])=> {}
     const onSort = ()=> {}
 
@@ -38,13 +43,15 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         index: index, 
         isSelected: index == 4 || index == 7 || index == 8 } as TableItem)
 
-    const onChange = () => 
-        setItems(setVirtualTableItems({items: Array.from(Array(20).keys()).map(index => getItem(index)), itemRenderer}))
+    const onChange = () => {
+        tableItems.current = Array.from(Array(20).keys()).map(index => getItem(index))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItem: getTableItem, itemRenderer}))
+    }
     
-    
-    const onChangeArray = () => 
-        setItems(setVirtualTableItems({items: Array.from(Array(60).keys()).map(index => getItem(index)), itemRenderer, currentIndex: 45}))
-    
+    const onChangeArray = () => {
+        tableItems.current = Array.from(Array(60).keys()).map(index => getItem(index))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItem: getTableItem, itemRenderer, currentIndex: 45}))
+    }
     
     const itemRenderer = (item: VirtualTableItem) => {
         const tableItem = item as TableItem
@@ -68,6 +75,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
             <div className='containerVirtualTable'>
                 <VirtualTable 
                     columns={cols} 
+                    //isColumnsHidden={true}
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} 
                     items={items}

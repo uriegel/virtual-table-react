@@ -5,15 +5,13 @@ import styles from './styles.module.css'
 import { Scrollbar } from './Scrollbar'
 import { Columns, Column } from './Columns'
 
-const getItemsCount = (items: VirtualTableItems) => items.items.length
-
 const validateCurrentIndex = (items: VirtualTableItems, index?: number) => {
 	let i = index ?? 0
-	if (getItemsCount(items) > 0) {
+	if (items.count > 0) {
 		if (i < 0)
 			i = 0
-		else if (i >= getItemsCount(items))
-			i = getItemsCount(items) - 1
+		else if (i >= items.count)
+			i = items.count - 1
 	}
 	return i
 }
@@ -23,33 +21,30 @@ export type VirtualTableItem = {
 	isSelected?: boolean
 }
 
-export type VirtualTableItemIndexer = {
-    count: number
-    getItem: (i: number)=>VirtualTableItem
-}
-
 export type VirtualTableItems = {
-	// TODO items: VirtualTableItem[] | VirtualTableItemIndexer
-	items: VirtualTableItem[] 
+	count: number
+	getItem: (index: number)=>VirtualTableItem 
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 	currentIndex?: number
 }
 
 export const setVirtualTableItems = (items: VirtualTableItems) => ({
-	items: items.items,
+	count: items.count,
+	getItem: items.getItem,
 	itemRenderer: items.itemRenderer,
 	currentIndex: validateCurrentIndex(items, items.currentIndex)
-})
+}) 
 
 export type VirtualTableProps = {
 	columns: Column[]
 	onColumnsChanged: (columns: Column[])=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
-	items: VirtualTableItems 
+	items: VirtualTableItems
 	onItemsChanged: (items: VirtualTableItems)=>void
 	theme?: string
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
+	isColumnsHidden?: boolean
 }
 
 export const VirtualTable = ({ 
@@ -61,6 +56,7 @@ export const VirtualTable = ({
 		theme, 
 		focused, 
 		onFocused,
+		isColumnsHidden
  	}: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
@@ -119,8 +115,8 @@ export const VirtualTable = ({
 		setHeight(height)
 		if (height && itemHeight)
 			 setItemsPerPage(Math.floor(height / itemHeight))
-		if (getItemsCount(items) - scrollPosition < itemsPerPage) 
-			setScrollPosition(Math.max(0, getItemsCount(items) - itemsPerPage))
+		if (items.count - scrollPosition < itemsPerPage) 
+			setScrollPosition(Math.max(0, items.count - itemsPerPage))
 	}
 	useEffect(() => handleResize(), [])
    	useEffect(() => {
@@ -134,20 +130,18 @@ export const VirtualTable = ({
 	}, [ focused])
 
 	useEffect(() => {
-		const trh = virtualTable.current!.querySelector("tr")
-		if (trh && trh.clientHeight) {
-			setColumnHeight(trh.clientHeight)
-			const height = virtualTable.current!.clientHeight - trh.clientHeight
-			setHeight(height)
-			const tr = virtualTable.current!.querySelector("tbody tr")
-	 		if (tr && tr.clientHeight) {
-				const itemHeight = tr.clientHeight
-	 			setItemHeight(itemHeight)
-				const itemsPerPage = Math.floor(height / itemHeight)
-				setItemsPerPage(itemsPerPage)
-				if (getItemsCount(items) - scrollPosition < itemsPerPage) 
-					setScrollPosition(Math.max(0, getItemsCount(items) - itemsPerPage))
-			}
+		const trh = virtualTable.current!.querySelector("thead tr")
+		setColumnHeight(trh?.clientHeight ?? 0)
+		const height = virtualTable.current!.clientHeight - (trh?.clientHeight ?? 0)
+		setHeight(height)
+		const tr = virtualTable.current!.querySelector("tbody tr")
+		if (tr && tr.clientHeight) {
+			const itemHeight = tr.clientHeight
+			setItemHeight(itemHeight)
+			const itemsPerPage = Math.floor(height / itemHeight)
+			setItemsPerPage(itemsPerPage)
+			if (items.count - scrollPosition < itemsPerPage) 
+				setScrollPosition(Math.max(0, items.count - itemsPerPage))
 		}
 	}, [ innerTheme ])
 	useEffect(() => {
@@ -170,13 +164,13 @@ export const VirtualTable = ({
 
 	const onWheel = (sevt: React.WheelEvent) => {
 		const evt = sevt.nativeEvent
-		if (getItemsCount(items) > itemsPerPage) {
+		if (items.count > itemsPerPage) {
 			var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
 			let newPos = scrollPosition + delta
 			if (newPos < 0)
 				newPos = 0
-			if (newPos > getItemsCount(items) - itemsPerPage) 
-				newPos = getItemsCount(items) - itemsPerPage
+			if (newPos > items.count - itemsPerPage) 
+				newPos = items.count - itemsPerPage
 				setScrollPosition(newPos)
 		}        
 	}			
@@ -210,12 +204,12 @@ export const VirtualTable = ({
 		sevt.preventDefault()
 	}
 
-	const end = () => setCurrentIndex(getItemsCount(items) - 1)
+	const end = () => setCurrentIndex(items.count - 1)
 	const pos1 = () => setCurrentIndex(0)
 	const pageDown = () =>
-	setCurrentIndex((items.currentIndex ?? 0) < getItemsCount(items) - itemsPerPage + 1 
+	setCurrentIndex((items.currentIndex ?? 0) < items.count - itemsPerPage + 1 
 		? (items.currentIndex ?? 0) + itemsPerPage - 1
-		: getItemsCount(items) - 1)
+		: items.count - 1)
 	const pageUp = () => setCurrentIndex(items.currentIndex ?? 0 > itemsPerPage - 1 ? (items.currentIndex ?? 0) - itemsPerPage + 1: 0)	
 	const upOne = () => setCurrentIndex((items.currentIndex ?? 0) - 1)
 	const downOne = () => setCurrentIndex((items.currentIndex ?? 0) + 1)
@@ -225,7 +219,8 @@ export const VirtualTable = ({
 		if (i != items.currentIndex) {
 			onItemsChanged({
 				itemRenderer: items.itemRenderer,
-				items: items.items,
+				count: items.count,
+				getItem: items.getItem,
 				currentIndex: i
 			})
 		}
@@ -267,9 +262,9 @@ export const VirtualTable = ({
     
     const renderItems = () => { 
 		if (itemsPerPage) {
-			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(getItemsCount(items) - scrollPosition, 0)))
+			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.count - scrollPosition, 0)))
 				.keys())        
-				.map(i => jsxReturner(items.items[i + scrollPosition]))
+				.map(i => jsxReturner(items.getItem(i + scrollPosition)))
 		}
 	}
 
@@ -285,6 +280,7 @@ export const VirtualTable = ({
 				onMouseDown={onMouseDown}>
 				<Columns 
                     cols={columns} 
+					isHidden={isColumnsHidden}
                     onColumnClick={onColumnClick} 
                     onSubItemClick={onSubItemClick}
                     onWidthsChanged={onWidthsChanged}
@@ -297,7 +293,7 @@ export const VirtualTable = ({
 				{ <Scrollbar 
 					height={height} 
 					itemsPerPage={itemsPerPage} 
-					count={getItemsCount(items)} 
+					count={items.count} 
 					position={scrollPosition}
 					positionChanged={setScrollPosition}
 					visibilityChanged={scrollbarVisibilityChanged} />  }
@@ -305,3 +301,6 @@ export const VirtualTable = ({
 		</div>
 	)
 }
+
+// TODO: major change
+// TODO: initial setItems #2: position too high

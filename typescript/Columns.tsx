@@ -13,12 +13,13 @@ export type Column = {
 
 type ColumnsProps = {
 	cols: Column[], 
+	isHidden?: boolean
 	onColumnClick: (column: number)=>void, 
 	onSubItemClick: (column: number)=>void, 
 	onWidthsChanged: (widths: number[])=>void	
 }
 
-export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }: ColumnsProps) => {
+export const Columns = ({ cols, isHidden, onColumnClick, onSubItemClick, onWidthsChanged }: ColumnsProps) => {
 	const [draggingReady, setDraggingReady] = useState(false)
 
 	const onMouseMove = (sevt: React.MouseEvent) => {
@@ -130,35 +131,37 @@ export const Columns = ({ cols, onColumnClick, onSubItemClick, onWidthsChanged }
 		? styles.sortDescending 
 		: ''
 
-	return (
-		<thead>
-			<tr className={draggingReady ? styles.pointerEw : ''}>
-				{cols.map((col, i) => (
-					<th onMouseMove={onMouseMove}
-						onMouseDown={onMouseDown} 
-						key={i} 
-						className={`${styles.columnTh} ${col.isSortable ? styles.isSortable : ''}`}
-						style={col.width ? {width: col.width + '%'} : {}} >
-							<div className={styles.column} onClick={() => onColumnClick(i)}>
-								<div className={`${styles.maincol} ${getSorting(col)}`}>
-									{col.name}
+	return !isHidden
+		? (
+			<thead>
+				<tr className={draggingReady ? styles.pointerEw : ''}>
+					{cols.map((col, i) => (
+						<th onMouseMove={onMouseMove}
+							onMouseDown={onMouseDown} 
+							key={i} 
+							className={`${styles.columnTh} ${col.isSortable ? styles.isSortable : ''}`}
+							style={col.width ? {width: col.width + '%'} : {}} >
+								<div className={styles.column} onClick={() => onColumnClick(i)}>
+									<div className={`${styles.maincol} ${getSorting(col)}`}>
+										{col.name}
+									</div>
+									{col.subItem 
+										? (
+											<div 
+												onClick={evt => {
+													onSubItemClick(i)
+													evt.stopPropagation()
+												}}
+												className= {`${getSubSorting(col)}`}>
+												{col.subItem}
+											</div>
+										)
+										:  ""}
 								</div>
-								{col.subItem 
-									? (
-										<div 
-											onClick={evt => {
-												onSubItemClick(i)
-												evt.stopPropagation()
-											}}
-											className= {`${getSubSorting(col)}`}>
-											{col.subItem}
-										</div>
-									)
-									:  ""}
-							</div>
-					</th> 
-				))}
-			</tr>
-		</thead>
-	)
+						</th> 
+					))}
+				</tr>
+			</thead>
+		)
+		: null
 }
