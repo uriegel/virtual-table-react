@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect } from 'react'
 import { ColumnsTest } from './ColumnsTest'
 import ScrollbarTest from './ScrollbarTest'
+import {TableTest} from './TableTest'
 import {VirtualTableTest} from './VirtualTableTest'
 
 const App = () => {
@@ -30,12 +31,26 @@ const App = () => {
         changeTheme("blue")
     }, [])
 
+    const renderComponent = (appChoice: number) => {
+        switch (appChoice) {
+            case 0:
+                return <ColumnsTest />
+            case 1:
+                return <ScrollbarTest /> 
+            case 2:
+                return <TableTest theme={theme} />
+            default: 
+                return <VirtualTableTest theme={theme} />
+        }
+    }
+
     return (
         <div>
             <div>
                 <select onChange={onAppChange}>
                     <option>Columns</option>
                     <option>Scrollbar</option>
+                    <option>Table</option>
                     <option>Virtual Table</option>
                 </select>
                 <select onChange={onThemeChange}>
@@ -43,11 +58,7 @@ const App = () => {
                     <option>yaru</option>
                 </select>
             </div>
-            {appChoice == 1 
-                ? <ScrollbarTest /> 
-                : (appChoice == 2 
-                    ? <VirtualTableTest theme={theme} />
-                    : <ColumnsTest />)}
+            {renderComponent(appChoice)}
         </div>
     )
 }
