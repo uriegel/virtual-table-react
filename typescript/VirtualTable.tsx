@@ -23,14 +23,14 @@ export type VirtualTableItem = {
 
 export type VirtualTableItems = {
 	count: number
-	getItem: (index: number)=>VirtualTableItem 
+	getItems: (start: number, end: number)=>Promise<VirtualTableItem[]>,
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 	currentIndex?: number
 }
 
 export const setVirtualTableItems = (items: VirtualTableItems) => ({
 	count: items.count,
-	getItem: items.getItem,
+	getItems: items.getItems,
 	itemRenderer: items.itemRenderer,
 	currentIndex: validateCurrentIndex(items, items.currentIndex)
 }) 
@@ -66,6 +66,7 @@ export const VirtualTable = ({
 	const [innerTheme, setInnerTheme] = useState("")
 	const [scrollbarActive, setScrollbarActive] = useState(false)
 	const [scrollPosition, setScrollPosition] = useState(0)
+	const [displayItems, setDisplayItems] = useState([] as VirtualTableItem[])
 
 	const previousCurrentIndex = useRef(0)
 	useLayoutEffect(() => {
@@ -156,6 +157,12 @@ export const VirtualTable = ({
 	}, [theme])
 
 	useLayoutEffect(() => {
+		(async () => 
+			setDisplayItems(await items.getItems(scrollPosition, Math.min(itemsPerPage + scrollPosition, items.count - 1)))
+		)()
+	}, [items, scrollPosition])
+
+	useLayoutEffect(() => {
 		if (!itemHeight) {
 			const tr = virtualTable.current!.querySelector("tbody tr")
 	 		if (tr && tr.clientHeight) {
@@ -164,7 +171,7 @@ export const VirtualTable = ({
 				setItemsPerPage(Math.floor(height / itemHeight))
 	 		}
 		}
-	}, [items])
+	}, [displayItems])
 
 	const scrollbarVisibilityChanged =(val: boolean) => setScrollbarActive(val)
 
@@ -226,7 +233,7 @@ export const VirtualTable = ({
 			onItemsChanged({
 				itemRenderer: items.itemRenderer,
 				count: items.count,
-				getItem: items.getItem,
+				getItems: items.getItems,
 				currentIndex: i
 			})
 		}
@@ -266,14 +273,12 @@ export const VirtualTable = ({
 		</tr> 
 	)
     
-    const renderItems = () => { 
-		if (itemsPerPage) {
-			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.count - scrollPosition, 0)))
-				.keys())        
-				.map(i => jsxReturner(items.getItem(i + scrollPosition)))
-		}
-	}
+    const renderItems = () => displayItems.map(item => jsxReturner(item))
 
+		// return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.count - scrollPosition, 0)))
+		// 	.keys())        
+		// 	.map(i => jsxReturner(items.getItem(i + scrollPosition)))
+	
 	return (
 		<div className={styles.tableviewRoot} 
 			tabIndex={1}

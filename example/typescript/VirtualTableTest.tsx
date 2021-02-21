@@ -29,7 +29,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
     const getTableItem = (i: number) => tableItems.current[i]
 
     const [focused, setFocused] = useState(false)
-    const [items, setItems ] = useState(setVirtualTableItems({count: 0, getItem: getTableItem, itemRenderer: i=>[]}) as VirtualTableItems)
+    const [items, setItems ] = useState(setVirtualTableItems({count: 0, getItems: async (s, e) =>[], itemRenderer: i=>[]}) as VirtualTableItems)
         
     const tableItems = useRef([] as VirtualTableItem[])
 
@@ -43,14 +43,18 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         index: index, 
         isSelected: index == 4 || index == 7 || index == 8 } as TableItem)
 
+    const getItems = (start: number, end: number) => 
+        new Promise<TableItem[]>(res => setTimeout(() => 
+            res(Array.from(Array(end - start + 1).keys()).map(i => getItem(i + start))), 30))
+
     const onChange = () => {
         tableItems.current = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setVirtualTableItems({count: tableItems.current.length, getItem: getTableItem, itemRenderer}))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, itemRenderer}))
     }
     
     const onChangeArray = () => {
         tableItems.current = Array.from(Array(60).keys()).map(index => getItem(index))
-        setItems(setVirtualTableItems({count: tableItems.current.length, getItem: getTableItem, itemRenderer, currentIndex: 45}))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, itemRenderer, currentIndex: 45}))
     }
     
     const itemRenderer = (item: VirtualTableItem) => {
@@ -87,4 +91,4 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         </div>
     )
 }
-
+// TODO common features with TableTest in base Component
