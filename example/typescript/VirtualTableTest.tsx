@@ -87,3 +87,4 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         </div>
     )
 }
+// TODO wthout theme wrong initial height
