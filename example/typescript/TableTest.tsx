@@ -88,3 +88,4 @@ export const TableTest = ({theme}: TableTestProps) => {
     )
 }
 
+// TODO: change getItem to item[]
