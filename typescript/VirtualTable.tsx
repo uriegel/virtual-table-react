@@ -117,7 +117,8 @@ export const VirtualTable = ({
 		if (items.count - scrollPosition < itemsPerPage) 
 			setScrollPosition(Math.max(0, items.count - itemsPerPage))
 	}
-	useEffect(() => handleResize(), []) // TODO timeout 10 -> handleResize
+	useEffect(() => handleResize(), []) 
+	useEffect(() => handleResize(), [columnHeight]) 
    	useEffect(() => {
         window.addEventListener("resize", handleResize)
         return () => window.removeEventListener("resize", handleResize)
