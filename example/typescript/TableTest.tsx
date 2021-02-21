@@ -26,12 +26,8 @@ export const TableTest = ({theme}: TableTestProps) => {
         { name: "Letzte Spalte", isSortable: true }
     ] as Column[])
 
-    const getTableItem = (i: number) => tableItems.current[i]
-
     const [focused, setFocused] = useState(false)
-    const [items, setItems ] = useState(setTableItems({count: 0, getItem: getTableItem, itemRenderer: i=>[]}) as TableItems)
-        
-    const tableItems = useRef([] as TableItem[])
+    const [items, setItems ] = useState(setTableItems({items: [], itemRenderer: i=>[]}) as TableItems)
 
     const onColsChanged = (cols: Column[])=> {}
     const onSort = ()=> {}
@@ -44,13 +40,13 @@ export const TableTest = ({theme}: TableTestProps) => {
         isSelected: index == 4 || index == 7 || index == 8 } as TableItem)
 
     const onChange = () => {
-        tableItems.current = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setTableItems({count: tableItems.current.length, getItem: getTableItem, itemRenderer}))
+        const items = Array.from(Array(20).keys()).map(index => getItem(index))
+        setItems(setTableItems({items, itemRenderer}))
     }
     
     const onChangeArray = () => {
-        tableItems.current = Array.from(Array(60).keys()).map(index => getItem(index))
-        setItems(setTableItems({count: tableItems.current.length, getItem: getTableItem, itemRenderer, currentIndex: 45}))
+        const items = Array.from(Array(60).keys()).map(index => getItem(index))
+        setItems(setTableItems({items, itemRenderer, currentIndex: 45}))
     }
     
     const itemRenderer = (item: TableItem) => {
@@ -88,4 +84,3 @@ export const TableTest = ({theme}: TableTestProps) => {
     )
 }
 
-// TODO: change getItem to item[]

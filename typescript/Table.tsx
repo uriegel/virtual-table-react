@@ -7,11 +7,11 @@ import { Columns, Column } from './Columns'
 
 const validateCurrentIndex = (items: TableItems, index?: number) => {
 	let i = index ?? 0
-	if (items.count > 0) {
+	if (items.items.length > 0) {
 		if (i < 0)
 			i = 0
-		else if (i >= items.count)
-			i = items.count - 1
+		else if (i >= items.items.length)
+			i = items.items.length - 1
 	}
 	return i
 }
@@ -22,15 +22,13 @@ export type TableItem = {
 }
 
 export type TableItems = {
-	count: number
-	getItem: (index: number)=>TableItem 
+	items: TableItem[] 
 	itemRenderer: (item: TableItem)=>JSX.Element[]
 	currentIndex?: number
 }
 
 export const setTableItems = (items: TableItems) => ({
-	count: items.count,
-	getItem: items.getItem,
+	items: items.items,
 	itemRenderer: items.itemRenderer,
 	currentIndex: validateCurrentIndex(items, items.currentIndex)
 }) 
@@ -114,8 +112,8 @@ export const Table = ({
 		setHeight(height)
 		if (height && itemHeight)
 			 setItemsPerPage(Math.floor(height / itemHeight))
-		if (items.count - scrollPosition < itemsPerPage) 
-			setScrollPosition(Math.max(0, items.count - itemsPerPage))
+		if (items.items.length - scrollPosition < itemsPerPage) 
+			setScrollPosition(Math.max(0, items.items.length - itemsPerPage))
 	}
 	useEffect(() => handleResize(), []) 
 	useEffect(() => handleResize(), [columnHeight]) 
@@ -146,8 +144,8 @@ export const Table = ({
 			setItemHeight(itemHeight)
 			const itemsPerPage = Math.floor(height / itemHeight)
 			setItemsPerPage(itemsPerPage)
-			if (items.count - scrollPosition < itemsPerPage) 
-				setScrollPosition(Math.max(0, items.count - itemsPerPage))
+			if (items.items.length - scrollPosition < itemsPerPage) 
+				setScrollPosition(Math.max(0, items.items.length - itemsPerPage))
 		}
 	}, [ innerTheme ])
 	useLayoutEffect(() => {
@@ -170,13 +168,13 @@ export const Table = ({
 
 	const onWheel = (sevt: React.WheelEvent) => {
 		const evt = sevt.nativeEvent
-		if (items.count > itemsPerPage) {
+		if (items.items.length > itemsPerPage) {
 			var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
 			let newPos = scrollPosition + delta
 			if (newPos < 0)
 				newPos = 0
-			if (newPos > items.count - itemsPerPage) 
-				newPos = items.count - itemsPerPage
+			if (newPos > items.items.length - itemsPerPage) 
+				newPos = items.items.length - itemsPerPage
 				setScrollPosition(newPos)
 		}        
 	}			
@@ -210,12 +208,12 @@ export const Table = ({
 		sevt.preventDefault()
 	}
 
-	const end = () => setCurrentIndex(items.count - 1)
+	const end = () => setCurrentIndex(items.items.length - 1)
 	const pos1 = () => setCurrentIndex(0)
 	const pageDown = () =>
-	setCurrentIndex((items.currentIndex ?? 0) < items.count - itemsPerPage + 1 
+	setCurrentIndex((items.currentIndex ?? 0) < items.items.length - itemsPerPage + 1 
 		? (items.currentIndex ?? 0) + itemsPerPage - 1
-		: items.count - 1)
+		: items.items.length - 1)
 	const pageUp = () => setCurrentIndex(items.currentIndex ?? 0 > itemsPerPage - 1 ? (items.currentIndex ?? 0) - itemsPerPage + 1: 0)	
 	const upOne = () => setCurrentIndex((items.currentIndex ?? 0) - 1)
 	const downOne = () => setCurrentIndex((items.currentIndex ?? 0) + 1)
@@ -225,8 +223,7 @@ export const Table = ({
 		if (i != items.currentIndex) {
 			onItemsChanged({
 				itemRenderer: items.itemRenderer,
-				count: items.count,
-				getItem: items.getItem,
+				items: items.items,
 				currentIndex: i
 			})
 		}
@@ -268,9 +265,9 @@ export const Table = ({
     
     const renderItems = () => { 
 		if (itemsPerPage) {
-			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.count - scrollPosition, 0)))
+			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.items.length - scrollPosition, 0)))
 				.keys())        
-				.map(i => jsxReturner(items.getItem(i + scrollPosition)))
+				.map(i => jsxReturner(items.items[i + scrollPosition]))
 		}
 	}
 
@@ -299,7 +296,7 @@ export const Table = ({
 				{ <Scrollbar 
 					height={height} 
 					itemsPerPage={itemsPerPage} 
-					count={items.count} 
+					count={items.items.length} 
 					position={scrollPosition}
 					positionChanged={setScrollPosition}
 					visibilityChanged={scrollbarVisibilityChanged} />  }
