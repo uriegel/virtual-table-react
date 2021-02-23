@@ -24,14 +24,12 @@ export type VirtualTableItem = {
 export type VirtualTableItems = {
 	count: number
 	getItems: (start: number, end: number)=>Promise<VirtualTableItem[]>,
-	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 	currentIndex?: number
 }
 
 export const setVirtualTableItems = (items: VirtualTableItems) => ({
 	count: items.count,
 	getItems: items.getItems,
-	itemRenderer: items.itemRenderer,
 	currentIndex: validateCurrentIndex(items, items.currentIndex)
 }) 
 
@@ -41,6 +39,7 @@ export type VirtualTableProps = {
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 	items: VirtualTableItems
 	onItemsChanged: (items: VirtualTableItems)=>void
+	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
 	theme?: string
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
@@ -53,6 +52,7 @@ export const VirtualTable = ({
 		onSort,
 		items,
 		onItemsChanged, 
+		itemRenderer,
 		theme, 
 		focused, 
 		onFocused,
@@ -231,7 +231,6 @@ export const VirtualTable = ({
 		const i = validateCurrentIndex(items, index)
 		if (i != items.currentIndex) {
 			onItemsChanged({
-				itemRenderer: items.itemRenderer,
 				count: items.count,
 				getItems: items.getItems,
 				currentIndex: i
@@ -269,7 +268,7 @@ export const VirtualTable = ({
     const jsxReturner = (item: VirtualTableItem) => (
 		<tr key={item.index} 
 			className={`${item.index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
-			{items.itemRenderer(item)}
+			{itemRenderer(item)}
 		</tr> 
 	)
     

@@ -29,8 +29,8 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
     const getTableItem = (i: number) => tableItems.current[i]
 
     const [focused, setFocused] = useState(false)
-    const [items, setItems ] = useState(setVirtualTableItems({count: 0, getItems: async (s, e) =>[], itemRenderer: i=>[]}) as VirtualTableItems)
-        
+    const [items, setItems ] = useState(setVirtualTableItems({count: 0, getItems: async (s, e) =>[] }) as VirtualTableItems)
+
     const tableItems = useRef([] as VirtualTableItem[])
 
     const onColsChanged = (cols: Column[])=> {}
@@ -49,12 +49,12 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
 
     const onChange = () => {
         tableItems.current = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, itemRenderer}))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItems }))
     }
     
     const onChangeArray = () => {
         tableItems.current = Array.from(Array(60).keys()).map(index => getItem(index))
-        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, itemRenderer, currentIndex: 45}))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, currentIndex: 45}))
     }
     
     const itemRenderer = (item: VirtualTableItem) => {
@@ -84,6 +84,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     onSort={onSort} 
                     items={items}
                     onItemsChanged ={setItems}
+                    itemRenderer={itemRenderer}
                     theme={theme}
                     focused={focused}
                     onFocused={onFocused} />
