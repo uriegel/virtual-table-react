@@ -23,7 +23,7 @@ export type VirtualTableItem = {
 
 export type VirtualTableItems = {
 	count: number
-	getItems: (start: number, end: number)=>Promise<VirtualTableItem[]>,
+	getItems: (start: number, end: number)=>Promise<VirtualTableItem[]|null>,
 	currentIndex?: number
 }
 
@@ -157,9 +157,12 @@ export const VirtualTable = ({
 	}, [theme])
 
 	useLayoutEffect(() => {
-		(async () => 
-			setDisplayItems(await items.getItems(scrollPosition, Math.min(itemsPerPage + scrollPosition, items.count - 1)))
-		)()
+		const fetchItems = async () => {
+			const dis = await items.getItems(scrollPosition, Math.min(itemsPerPage + scrollPosition, items.count - 1))
+			if (dis)
+				setDisplayItems(dis)
+		}
+		fetchItems()
 	}, [items, scrollPosition])
 
 	useLayoutEffect(() => {
