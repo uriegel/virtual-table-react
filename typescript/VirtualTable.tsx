@@ -235,8 +235,10 @@ export const VirtualTable = ({
 	}
 
 	const scrollIntoView = (index: number) => {
-		if (index < scrollPosition) 
+		if (index < scrollPosition) {
+			setScrollPosition(index)
 			handleResize()
+		}
 		if (index > scrollPosition + itemsPerPage - 1) 
 			setScrollPosition(index - itemsPerPage + 1)
 	} 
