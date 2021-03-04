@@ -125,7 +125,6 @@ export const VirtualTable = ({
 	}, [ focused])
 
 	useLayoutEffect(() => {
-		previousCurrentIndex.current = 0
 		setScrollPosition(0)
 		onItemsChanged(setVirtualTableItems(items))
 	}, [itemHeight, itemsPerPage])
