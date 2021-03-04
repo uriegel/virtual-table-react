@@ -44,12 +44,14 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
         isSelected: index == 4 || index == 7 || index == 8 } as TableItem)
 
     const getItems = (start: number, end: number) => 
-        new Promise<TableItem[]>(res => setTimeout(() => 
-            res(Array.from(Array(end - start + 1).keys()).map(i => getItem(i + start))), 30))
+        new Promise<TableItem[]>(res => setTimeout(() => {
+            const safeStart = Math.min(end, start)
+            res(Array.from(Array(end - safeStart + 1).keys()).map(i => getItem(i + safeStart)))
+        }, 30))
 
     const onChange = () => {
         tableItems.current = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setVirtualTableItems({count: tableItems.current.length, getItems }))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, currentIndex: 18}))
     }
     
     const onChangeArray = () => {
