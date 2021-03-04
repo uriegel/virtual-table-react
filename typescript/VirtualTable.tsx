@@ -68,13 +68,7 @@ export const VirtualTable = ({
 	const [scrollPosition, setScrollPosition] = useState(0)
 	const [displayItems, setDisplayItems] = useState([] as VirtualTableItem[])
 
-	const previousCurrentIndex = useRef(0)
-	useLayoutEffect(() => {
-		if (previousCurrentIndex.current != items.currentIndex ?? 0) {
-			previousCurrentIndex.current = items.currentIndex ?? 0
-			scrollIntoView(previousCurrentIndex.current)	
-		}
-	}, [items])
+	useLayoutEffect(() => scrollIntoView(items.currentIndex ?? 0), [items])
 
 	const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
