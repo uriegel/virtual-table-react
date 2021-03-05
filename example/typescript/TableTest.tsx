@@ -41,7 +41,7 @@ export const TableTest = ({theme}: TableTestProps) => {
 
     const onChange = () => {
         const items = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setTableItems({items}))
+        setItems(setTableItems({items, currentIndex: 18}))
     }
     
     const onChangeArray = () => {

@@ -65,13 +65,7 @@ export const Table = ({
 	const [scrollbarActive, setScrollbarActive] = useState(false)
 	const [scrollPosition, setScrollPosition] = useState(0)
 
-	const previousCurrentIndex = useRef(0)
-	useLayoutEffect(() => {
-		if (previousCurrentIndex.current != items.currentIndex ?? 0) {
-			previousCurrentIndex.current = items.currentIndex ?? 0
-			scrollIntoView(previousCurrentIndex.current)	
-		}
-	}, [items])
+	useLayoutEffect(() => scrollIntoView(items.currentIndex ?? 0), [items])
 
 	const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -128,7 +122,6 @@ export const Table = ({
 	}, [ focused])
 
 	useLayoutEffect(() => {
-		previousCurrentIndex.current = 0
 		setScrollPosition(0)
 		onItemsChanged(setTableItems(items))
 	}, [itemHeight, itemsPerPage])
@@ -229,8 +222,10 @@ export const Table = ({
 	}
 
 	const scrollIntoView = (index: number) => {
-		if (index < scrollPosition) 
+		if (index < scrollPosition) {
 			setScrollPosition(index)
+			handleResize()
+		}
 		if (index > scrollPosition + itemsPerPage - 1) 
 			setScrollPosition(index - itemsPerPage + 1)
 	} 
