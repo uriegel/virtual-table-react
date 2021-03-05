@@ -23,13 +23,11 @@ export type TableItem = {
 
 export type TableItems = {
 	items: TableItem[] 
-	itemRenderer: (item: TableItem)=>JSX.Element[]
 	currentIndex?: number
 }
 
 export const setTableItems = (items: TableItems) => ({
 	items: items.items,
-	itemRenderer: items.itemRenderer,
 	currentIndex: validateCurrentIndex(items, items.currentIndex)
 }) 
 
@@ -39,6 +37,7 @@ export type TableProps = {
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
 	items: TableItems
 	onItemsChanged: (items: TableItems)=>void
+	itemRenderer: (item: TableItem)=>JSX.Element[]
 	theme?: string
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
@@ -51,6 +50,7 @@ export const Table = ({
 		onSort,
 		items,
 		onItemsChanged, 
+		itemRenderer,
 		theme, 
 		focused, 
 		onFocused,
@@ -222,7 +222,6 @@ export const Table = ({
 		const i = validateCurrentIndex(items, index)
 		if (i != items.currentIndex) {
 			onItemsChanged({
-				itemRenderer: items.itemRenderer,
 				items: items.items,
 				currentIndex: i
 			})
@@ -259,7 +258,7 @@ export const Table = ({
     const jsxReturner = (item: TableItem) => (
 		<tr key={item.index} 
 			className={`${item.index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
-			{items.itemRenderer(item)}
+			{itemRenderer(item)}
 		</tr> 
 	)
     

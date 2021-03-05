@@ -27,7 +27,7 @@ export const TableTest = ({theme}: TableTestProps) => {
     ] as Column[])
 
     const [focused, setFocused] = useState(false)
-    const [items, setItems ] = useState(setTableItems({items: [], itemRenderer: i=>[]}) as TableItems)
+    const [items, setItems ] = useState(setTableItems({items: []}) as TableItems)
 
     const onColsChanged = (cols: Column[])=> {}
     const onSort = ()=> {}
@@ -41,12 +41,12 @@ export const TableTest = ({theme}: TableTestProps) => {
 
     const onChange = () => {
         const items = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setTableItems({items, itemRenderer}))
+        setItems(setTableItems({items}))
     }
     
     const onChangeArray = () => {
         const items = Array.from(Array(60).keys()).map(index => getItem(index))
-        setItems(setTableItems({items, itemRenderer, currentIndex: 45}))
+        setItems(setTableItems({items, currentIndex: 45}))
     }
     
     const itemRenderer = (item: TableItem) => {
@@ -76,6 +76,7 @@ export const TableTest = ({theme}: TableTestProps) => {
                     onSort={onSort} 
                     items={items}
                     onItemsChanged ={setItems}
+                    itemRenderer={itemRenderer}
                     theme={theme}
                     focused={focused}
                     onFocused={onFocused} />
