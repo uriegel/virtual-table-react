@@ -183,13 +183,13 @@
     background-color: var(--tablereact-is-selected-background-color);
 }
 .isCurrent {
-    outline-color: lightgray;
+    outline-color: var(--tablereact-item-selected-color);
     outline-width: 1px;
     outline-style: solid;
     outline-offset: -1px;
 }
 .tableviewRoot:focus .isCurrent {
-    outline-color: var(--tablereact-item-selected-color);
+    outline-color: var(--tablereact-item-selected-focus-color);
     outline-width: 1px;
     outline-style: solid;
     outline-offset: -1px;

@@ -6,7 +6,8 @@
 	--tablereact-is-selected-background-color: blue;
 	--tablereact-columns-separator-color:  white;
 	--tablereact-selected-background-hover-color: #0063ff;
-    --tablereact-item-selected-color: red;
+    --tablereact-item-selected-color: lightgray;
+    --tablereact-item-selected-focus-color: red;
 
     --tablereact-scrollbar-width: 16px;
     --tablereact-scrollbar-border-width: 1px;
