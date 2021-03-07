@@ -42,6 +42,7 @@ export type TableProps = {
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
 	isColumnsHidden?: boolean
+	onKeyDown?: (sevt: React.KeyboardEvent)=>void
 }
 
 export const Table = ({ 
@@ -54,7 +55,8 @@ export const Table = ({
 		theme, 
 		focused, 
 		onFocused,
-		isColumnsHidden
+		isColumnsHidden,
+		onKeyDown
  	}: TableProps) => {
 	const table = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
@@ -172,7 +174,7 @@ export const Table = ({
 		}        
 	}			
 
-	const onKeyDown = (sevt: React.KeyboardEvent) => {
+	const onKeyDownEvent = (sevt: React.KeyboardEvent) => {
 		const evt = sevt.nativeEvent
 		switch (evt.which) {
 			case 33:
@@ -196,6 +198,8 @@ export const Table = ({
 				downOne()
 				break
 			default:
+				if (onKeyDown)
+					onKeyDown(sevt)
 				return
 		}
 		sevt.preventDefault()
@@ -271,7 +275,7 @@ export const Table = ({
 			ref={table} 
 			onFocus={()=>onFocus(true)}
 			onBlur={()=>onFocus(false)}
-			onKeyDown={onKeyDown}
+			onKeyDown={onKeyDownEvent}
 			onWheel={onWheel}>
 			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}
 				onMouseDown={onMouseDown}>
