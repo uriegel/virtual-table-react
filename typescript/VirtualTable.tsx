@@ -17,7 +17,6 @@ const validateCurrentIndex = (items: VirtualTableItems, index?: number) => {
 }
 
 export type VirtualTableItem = {
-	index: number
 	isSelected?: boolean
 }
 
@@ -263,14 +262,14 @@ export const VirtualTable = ({
 			onFocused(isFocused)
 	}
 
-    const jsxReturner = (item: VirtualTableItem) => (
-		<tr key={item.index} 
-			className={`${item.index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
+    const jsxReturner = (item: VirtualTableItem, index: number) => (
+		<tr key={index} 
+			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
 			{itemRenderer(item)}
 		</tr> 
 	)
     
-    const renderItems = () => displayItems.map(item => jsxReturner(item))
+    const renderItems = () => displayItems.map((item, i) => jsxReturner(item, i + scrollPosition))
 
 		// return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.count - scrollPosition, 0)))
 		// 	.keys())        

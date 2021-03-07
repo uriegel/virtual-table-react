@@ -17,7 +17,6 @@ const validateCurrentIndex = (items: TableItems, index?: number) => {
 }
 
 export type TableItem = {
-	index: number
 	isSelected?: boolean
 }
 
@@ -254,9 +253,9 @@ export const Table = ({
 			onFocused(isFocused)
 	}
 
-    const jsxReturner = (item: TableItem) => (
-		<tr key={item.index} 
-			className={`${item.index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
+    const jsxReturner = (item: TableItem, index: number) => (
+		<tr key={index} 
+			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
 			{itemRenderer(item)}
 		</tr> 
 	)
@@ -265,7 +264,7 @@ export const Table = ({
 		if (itemsPerPage) {
 			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.items.length - scrollPosition, 0)))
 				.keys())        
-				.map(i => jsxReturner(items.items[i + scrollPosition]))
+				.map(i => jsxReturner(items.items[i + scrollPosition], i + scrollPosition))
 		}
 	}
 
