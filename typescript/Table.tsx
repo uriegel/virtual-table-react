@@ -42,7 +42,7 @@ export type TableProps = {
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
 	isColumnsHidden?: boolean
-	onKeyDown?: (sevt: React.KeyboardEvent)=>void
+	onKeyDown?: (sevt: React.KeyboardEvent)=>boolean
 }
 
 export const Table = ({ 
@@ -176,6 +176,8 @@ export const Table = ({
 
 	const onKeyDownEvent = (sevt: React.KeyboardEvent) => {
 		const evt = sevt.nativeEvent
+		if (onKeyDown && onKeyDown(sevt))
+			return
 		switch (evt.which) {
 			case 33:
 				pageUp()
@@ -198,8 +200,6 @@ export const Table = ({
 				downOne()
 				break
 			default:
-				if (onKeyDown)
-					onKeyDown(sevt)
 				return
 		}
 		sevt.preventDefault()
