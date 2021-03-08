@@ -44,7 +44,7 @@ export type VirtualTableProps = {
 	onFocused?: (focused: boolean)=>void
 	isColumnsHidden?: boolean
 	onKeyDown?: (sevt: React.KeyboardEvent)=>boolean
-	onDoubleClick?: (sevt: React.MouseEvent)=>boolean		
+	onDoubleClick?: (sevt: React.MouseEvent)=>void
 }
 
 export const VirtualTable = ({ 
