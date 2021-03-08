@@ -42,6 +42,7 @@ export type TableProps = {
 	onFocused?: (focused: boolean)=>void
 	isColumnsHidden?: boolean
 	onKeyDown?: (sevt: React.KeyboardEvent)=>boolean
+	onDoubleClick?: (sevt: React.MouseEvent)=>boolean		
 }
 
 export const Table = ({ 
@@ -55,7 +56,8 @@ export const Table = ({
 		focused, 
 		onFocused,
 		isColumnsHidden,
-		onKeyDown
+		onKeyDown,
+		onDoubleClick
  	}: TableProps) => {
 	const table = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
@@ -277,7 +279,8 @@ export const Table = ({
 			onKeyDown={onKeyDownEvent}
 			onWheel={onWheel}>
 			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}
-				onMouseDown={onMouseDown}>
+				onMouseDown={onMouseDown}
+				onDoubleClick={onDoubleClick}>
 				<Columns 
                     cols={columns} 
 					isHidden={isColumnsHidden}

@@ -43,6 +43,8 @@ export type VirtualTableProps = {
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
 	isColumnsHidden?: boolean
+	onKeyDown?: (sevt: React.KeyboardEvent)=>boolean
+	onDoubleClick?: (sevt: React.MouseEvent)=>boolean		
 }
 
 export const VirtualTable = ({ 
@@ -55,7 +57,9 @@ export const VirtualTable = ({
 		theme, 
 		focused, 
 		onFocused,
-		isColumnsHidden
+		isColumnsHidden,
+		onKeyDown,
+		onDoubleClick
  	}: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
@@ -183,8 +187,10 @@ export const VirtualTable = ({
 		}        
 	}			
 
-	const onKeyDown = (sevt: React.KeyboardEvent) => {
+	const onKeyDownEvent = (sevt: React.KeyboardEvent) => {
 		const evt = sevt.nativeEvent
+		if (onKeyDown && onKeyDown(sevt))
+			return
 		switch (evt.which) {
 			case 33:
 				pageUp()
@@ -281,10 +287,11 @@ export const VirtualTable = ({
 			ref={virtualTable} 
 			onFocus={()=>onFocus(true)}
 			onBlur={()=>onFocus(false)}
-			onKeyDown={onKeyDown}
+			onKeyDown={onKeyDownEvent}
 			onWheel={onWheel}>
 			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}
-				onMouseDown={onMouseDown}>
+				onMouseDown={onMouseDown}
+				onDoubleClick={onDoubleClick}>
 				<Columns 
                     cols={columns} 
 					isHidden={isColumnsHidden}
