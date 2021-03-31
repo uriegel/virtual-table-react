@@ -36,7 +36,6 @@ export const Columns = ({ cols, isHidden, onColumnClick, onSubItemClick, onWidth
 		}
 		else
 			setDraggingReady(false)
-
 	}
 
 	const onMouseDown = (sevt: React.MouseEvent) => {

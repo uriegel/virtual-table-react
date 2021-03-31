@@ -29,7 +29,7 @@ export const TableTest = ({theme}: TableTestProps) => {
     const [focused, setFocused] = useState(false)
     const [items, setItems ] = useState(setTableItems({items: []}) as TableItems)
 
-    const onColsChanged = (cols: Column[])=> {}
+    const onColsChanged = (cols: Column[])=> setCols(cols)
     const onSort = ()=> {}
 
     const getItem = (index: number) => ({ 

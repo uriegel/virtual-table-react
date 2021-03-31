@@ -33,7 +33,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
 
     const tableItems = useRef([] as VirtualTableItem[])
 
-    const onColsChanged = (cols: Column[])=> {}
+    const onColsChanged = (cols: Column[])=> setCols(cols)
     const onSort = ()=> {}
 
     const getItem = (index: number) => ({ 
