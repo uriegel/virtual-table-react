@@ -257,7 +257,7 @@ export const Table = ({
 
     const jsxReturner = (item: TableItem, index: number) => (
 		<tr key={index} 
-			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
+			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''} ${item.isSelected ? "tableItemReactIsSelected" : ''}`}> 
 			{itemRenderer(item)}
 		</tr> 
 	)

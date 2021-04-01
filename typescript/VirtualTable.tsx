@@ -270,7 +270,7 @@ export const VirtualTable = ({
 
     const jsxReturner = (item: VirtualTableItem, index: number) => (
 		<tr key={index} 
-			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''}`}> 
+			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''} ${item.isSelected ? "tableItemReactIsSelected" : ''}`}> 
 			{itemRenderer(item)}
 		</tr> 
 	)
