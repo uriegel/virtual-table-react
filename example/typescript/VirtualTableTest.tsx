@@ -72,6 +72,8 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
 
     const onFocused = (val: boolean) => setFocused(val)
 
+    const onDblClk = () => console.log("Double click")
+    
     return (
         <div className='rootVirtualTable'>
             <h1>Virtual Table</h1>
@@ -81,6 +83,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
             <div className='containerVirtualTable'>
                 <VirtualTable 
                     columns={cols} 
+                    onDoubleClick={onDblClk}
                     //isColumnsHidden={true}
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} 

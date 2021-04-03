@@ -279,8 +279,7 @@ export const Table = ({
 			onKeyDown={onKeyDownEvent}
 			onWheel={onWheel}>
 			<table className={`${styles.table} ${scrollbarActive ? '' : styles.noScrollbar}`}
-				onMouseDown={onMouseDown}
-				onDoubleClick={onDoubleClick}>
+				onMouseDown={onMouseDown}>
 				<Columns 
                     cols={columns} 
 					isHidden={isColumnsHidden}
@@ -288,7 +287,7 @@ export const Table = ({
                     onSubItemClick={onSubItemClick}
                     onWidthsChanged={onWidthsChanged}
                 />
-                <tbody>
+                <tbody onDoubleClick={onDoubleClick}>
 					{renderItems()}
 				</tbody>
 			</table>
