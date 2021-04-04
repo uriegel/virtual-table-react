@@ -95,7 +95,7 @@ export const VirtualTable = ({
             })
 			newState[i].subItemSort = columns[i].subItemSort == 1 ? 2 : 1
 			onColumnsChanged(newState)
-			onSort(i, columns[i].columnsSort == 2, true)
+			onSort(i, columns[i].subItemSort == 2, true)
 		}	
 	}
 
