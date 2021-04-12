@@ -5,13 +5,13 @@ import styles from './styles.module.css'
 import { Scrollbar } from './Scrollbar'
 import { Columns, Column } from './Columns'
 
-const validateCurrentIndex = (items: TableItems, index?: number) => {
+const validateCurrentIndex = (items: TableItem[], index?: number) => {
 	let i = index ?? 0
-	if (items.items.length > 0) {
+	if (items.length > 0) {
 		if (i < 0)
 			i = 0
-		else if (i >= items.items.length)
-			i = items.items.length - 1
+		else if (i >= items.length)
+			i = items.length - 1
 	}
 	return i
 }
@@ -20,22 +20,14 @@ export type TableItem = {
 	isSelected?: boolean
 }
 
-export type TableItems = {
-	items: TableItem[] 
-	currentIndex?: number
-}
-
-export const setTableItems = (items: TableItems) => ({
-	items: items.items,
-	currentIndex: validateCurrentIndex(items, items.currentIndex)
-}) 
-
 export type TableProps = {
 	columns: Column[]
 	onColumnsChanged: (columns: Column[])=>void
 	onSort: (index:number, descending: boolean, isSubItem?: boolean)=>void
-	items: TableItems
-	onItemsChanged: (items: TableItems)=>void
+	items: TableItem[]
+	currentIndex: number
+	onItemsChanged: (items: TableItem[])=>void
+	onCurrentIndexChanged: (index: number)=>void
 	itemRenderer: (item: TableItem)=>JSX.Element[]
 	theme?: string
 	focused?: boolean
@@ -50,7 +42,9 @@ export const Table = ({
 		onColumnsChanged, 
 		onSort,
 		items,
+		currentIndex,
 		onItemsChanged, 
+		onCurrentIndexChanged,
 		itemRenderer,
 		theme, 
 		focused, 
@@ -68,7 +62,7 @@ export const Table = ({
 	const [scrollbarActive, setScrollbarActive] = useState(false)
 	const [scrollPosition, setScrollPosition] = useState(0)
 
-	useLayoutEffect(() => scrollIntoView(items.currentIndex ?? 0), [items])
+	useLayoutEffect(() => scrollIntoView(currentIndex ?? 0), [items, currentIndex])
 
 	const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -109,8 +103,8 @@ export const Table = ({
 		setHeight(height)
 		if (height && itemHeight)
 			 setItemsPerPage(Math.floor(height / itemHeight))
-		if (items.items.length - scrollPosition < itemsPerPage) 
-			setScrollPosition(Math.max(0, items.items.length - itemsPerPage))
+		if (items.length - scrollPosition < itemsPerPage) 
+			setScrollPosition(Math.max(0, items.length - itemsPerPage))
 	}
 	useEffect(() => handleResize(), []) 
 	useEffect(() => handleResize(), [columnHeight]) 
@@ -126,7 +120,7 @@ export const Table = ({
 
 	useLayoutEffect(() => {
 		setScrollPosition(0)
-		onItemsChanged(setTableItems(items))
+		onItemsChanged( [...items])
 	}, [itemHeight, itemsPerPage])
 
 	useLayoutEffect(() => {
@@ -140,8 +134,8 @@ export const Table = ({
 			setItemHeight(itemHeight)
 			const itemsPerPage = Math.floor(height / itemHeight)
 			setItemsPerPage(itemsPerPage)
-			if (items.items.length - scrollPosition < itemsPerPage) 
-				setScrollPosition(Math.max(0, items.items.length - itemsPerPage))
+			if (items.length - scrollPosition < itemsPerPage) 
+				setScrollPosition(Math.max(0, items.length - itemsPerPage))
 		}
 	}, [ innerTheme ])
 	useLayoutEffect(() => {
@@ -164,13 +158,13 @@ export const Table = ({
 
 	const onWheel = (sevt: React.WheelEvent) => {
 		const evt = sevt.nativeEvent
-		if (items.items.length > itemsPerPage) {
+		if (items.length > itemsPerPage) {
 			var delta = evt.deltaY / Math.abs(evt.deltaY) * 3
 			let newPos = scrollPosition + delta
 			if (newPos < 0)
 				newPos = 0
-			if (newPos > items.items.length - itemsPerPage) 
-				newPos = items.items.length - itemsPerPage
+			if (newPos > items.length - itemsPerPage) 
+				newPos = items.length - itemsPerPage
 				setScrollPosition(newPos)
 		}        
 	}			
@@ -206,24 +200,20 @@ export const Table = ({
 		sevt.preventDefault()
 	}
 
-	const end = () => setCurrentIndex(items.items.length - 1)
+	const end = () => setCurrentIndex(items.length - 1)
 	const pos1 = () => setCurrentIndex(0)
 	const pageDown = () =>
-	setCurrentIndex((items.currentIndex ?? 0) < items.items.length - itemsPerPage + 1 
-		? (items.currentIndex ?? 0) + itemsPerPage - 1
-		: items.items.length - 1)
-	const pageUp = () => setCurrentIndex(items.currentIndex ?? 0 > itemsPerPage - 1 ? (items.currentIndex ?? 0) - itemsPerPage + 1: 0)	
-	const upOne = () => setCurrentIndex((items.currentIndex ?? 0) - 1)
-	const downOne = () => setCurrentIndex((items.currentIndex ?? 0) + 1)
+	setCurrentIndex((currentIndex ?? 0) < items.length - itemsPerPage + 1 
+		? (currentIndex ?? 0) + itemsPerPage - 1
+		: items.length - 1)
+	const pageUp = () => setCurrentIndex(currentIndex ?? 0 > itemsPerPage - 1 ? (currentIndex ?? 0) - itemsPerPage + 1: 0)	
+	const upOne = () => setCurrentIndex((currentIndex ?? 0) - 1)
+	const downOne = () => setCurrentIndex((currentIndex ?? 0) + 1)
 
 	const setCurrentIndex = (index?: number) => {
 		const i = validateCurrentIndex(items, index)
-		if (i != items.currentIndex) {
-			onItemsChanged({
-				items: items.items,
-				currentIndex: i
-			})
-		}
+		if (i != currentIndex) 
+			onCurrentIndexChanged(i)
 	}
 
 	const scrollIntoView = (index: number) => {
@@ -257,16 +247,16 @@ export const Table = ({
 
     const jsxReturner = (item: TableItem, index: number) => (
 		<tr key={index} 
-			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''} ${item.isSelected ? "tableItemReactIsSelected" : ''}`}> 
+			className={`${index == currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''} ${item.isSelected ? "tableItemReactIsSelected" : ''}`}> 
 			{itemRenderer(item)}
 		</tr> 
 	)
     
     const renderItems = () => { 
 		if (itemsPerPage) {
-			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.items.length - scrollPosition, 0)))
+			return Array.from(Array(Math.min(itemsPerPage + 1, Math.max(items.length - scrollPosition, 0)))
 				.keys())        
-				.map(i => jsxReturner(items.items[i + scrollPosition], i + scrollPosition))
+				.map(i => jsxReturner(items[i + scrollPosition], i + scrollPosition))
 		}
 	}
 
@@ -295,7 +285,7 @@ export const Table = ({
 				{ <Scrollbar 
 					height={height} 
 					itemsPerPage={itemsPerPage} 
-					count={items.items.length} 
+					count={items.length} 
 					position={scrollPosition}
 					positionChanged={setScrollPosition}
 					visibilityChanged={scrollbarVisibilityChanged} />  }

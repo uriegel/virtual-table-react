@@ -3,8 +3,6 @@ export { Columns, Column } from './Columns'
 export { 
     Table, 
     TableItem, 
-    TableItems, 
-    setTableItems 
 } from './Table'
 export { 
     VirtualTable, 

@@ -4,9 +4,7 @@ import 'virtual-table-react/dist/index.css'
 import { 
     Column, 
     Table, 
-    TableItem, 
-    setTableItems,
-    TableItems
+    TableItem
 } from 'virtual-table-react'
 
 interface TestTableItem extends TableItem {
@@ -27,7 +25,8 @@ export const TableTest = ({theme}: TableTestProps) => {
     ] as Column[])
 
     const [focused, setFocused] = useState(false)
-    const [items, setItems ] = useState(setTableItems({items: []}) as TableItems)
+    const [items, setItems ] = useState([] as TableItem[])
+    const [currentIndex, setCurrentIndex ] = useState(0)
 
     const onColsChanged = (cols: Column[])=> setCols(cols)
     const onSort = ()=> {}
@@ -41,12 +40,14 @@ export const TableTest = ({theme}: TableTestProps) => {
 
     const onChange = () => {
         const items = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setTableItems({items, currentIndex: 18}))
+        setItems(items)
+        setCurrentIndex(18)
     }
     
     const onChangeArray = () => {
-        const items = Array.from(Array(60).keys()).map(index => getItem(index))
-        setItems(setTableItems({items, currentIndex: 45}))
+        const items = Array.from(Array(600).keys()).map(index => getItem(index))
+        setItems(items)
+        setCurrentIndex(45)
     }
     
     const itemRenderer = (item: TableItem) => {
@@ -78,7 +79,9 @@ export const TableTest = ({theme}: TableTestProps) => {
                     onColumnsChanged={onColsChanged} 
                     onSort={onSort} 
                     items={items}
+                    currentIndex={currentIndex}
                     onItemsChanged ={setItems}
+                    onCurrentIndexChanged={setCurrentIndex}
                     itemRenderer={itemRenderer}
                     theme={theme}
                     focused={focused}
