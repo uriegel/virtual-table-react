@@ -34,7 +34,8 @@ export type TableProps = {
 	onFocused?: (focused: boolean)=>void
 	isColumnsHidden?: boolean
 	onKeyDown?: (sevt: React.KeyboardEvent)=>boolean
-	onDoubleClick?: (sevt: React.MouseEvent)=>void		
+	onDoubleClick?: (sevt: React.MouseEvent)=>void	
+	heightChanged: number	
 }
 
 export const Table = ({ 
@@ -51,7 +52,8 @@ export const Table = ({
 		onFocused,
 		isColumnsHidden,
 		onKeyDown,
-		onDoubleClick
+		onDoubleClick,
+		heightChanged
  	}: TableProps) => {
 	const table = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
@@ -107,7 +109,7 @@ export const Table = ({
 			setScrollPosition(Math.max(0, items.length - itemsPerPage))
 	}
 	useEffect(() => handleResize(), []) 
-	useEffect(() => handleResize(), [columnHeight]) 
+	useEffect(() => handleResize(), [columnHeight, heightChanged]) 
    	useEffect(() => {
         window.addEventListener("resize", handleResize)
         return () => window.removeEventListener("resize", handleResize)

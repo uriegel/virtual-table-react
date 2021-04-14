@@ -45,6 +45,7 @@ export type VirtualTableProps = {
 	isColumnsHidden?: boolean
 	onKeyDown?: (sevt: React.KeyboardEvent)=>boolean
 	onDoubleClick?: (sevt: React.MouseEvent)=>void
+	heightChanged: number	
 }
 
 export const VirtualTable = ({ 
@@ -61,7 +62,8 @@ export const VirtualTable = ({
 		onFocused,
 		isColumnsHidden,
 		onKeyDown,
-		onDoubleClick
+		onDoubleClick,
+		heightChanged
  	}: VirtualTableProps) => {
 	const virtualTable = useRef<HTMLDivElement>(null)
     const [height, setHeight ] = useState(0)
@@ -118,7 +120,7 @@ export const VirtualTable = ({
 			setScrollPosition(Math.max(0, items.count - itemsPerPage))
 	}
 	useEffect(() => handleResize(), []) 
-	useEffect(() => handleResize(), [columnHeight]) 
+	useEffect(() => handleResize(), [columnHeight, heightChanged]) 
    	useEffect(() => {
         window.addEventListener("resize", handleResize)
         return () => window.removeEventListener("resize", handleResize)
