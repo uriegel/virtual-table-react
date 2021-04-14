@@ -45,7 +45,7 @@ export type VirtualTableProps = {
 	isColumnsHidden?: boolean
 	onKeyDown?: (sevt: React.KeyboardEvent)=>boolean
 	onDoubleClick?: (sevt: React.MouseEvent)=>void
-	heightChanged: number	
+	heightChanged?: number	
 }
 
 export const VirtualTable = ({ 
