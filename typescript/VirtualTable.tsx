@@ -20,17 +20,15 @@ export type VirtualTableItem = {
 	isSelected?: boolean
 }
 
-export type VirtualTableItems = {
-	count: number
-	getItems: (start: number, end: number)=>Promise<VirtualTableItem[]|null>,
-	currentIndex?: number
-}
-
 export const setVirtualTableItems = (items: VirtualTableItems) => ({
 	count: items.count,
-	getItems: items.getItems,
-	currentIndex: validateCurrentIndex(items, items.currentIndex)
+	getItems: items.getItems
 }) 
+
+export type VirtualTableItems = {
+	count: number
+	getItems: (start: number, end: number)=>Promise<VirtualTableItem[]|null>
+}
 
 export type VirtualTableProps = {
 	columns: Column[]
@@ -39,6 +37,8 @@ export type VirtualTableProps = {
 	items: VirtualTableItems
 	onItemsChanged: (items: VirtualTableItems)=>void
 	itemRenderer: (item: VirtualTableItem)=>JSX.Element[]
+	currentIndex: number
+	onCurrentIndexChanged: (index: number)=>void
 	theme?: string
 	focused?: boolean
 	onFocused?: (focused: boolean)=>void
@@ -54,6 +54,8 @@ export const VirtualTable = ({
 		items,
 		onItemsChanged, 
 		itemRenderer,
+		currentIndex,
+		onCurrentIndexChanged,
 		theme, 
 		focused, 
 		onFocused,
@@ -71,7 +73,7 @@ export const VirtualTable = ({
 	const [scrollPosition, setScrollPosition] = useState(0)
 	const [displayItems, setDisplayItems] = useState([] as VirtualTableItem[])
 
-	useLayoutEffect(() => scrollIntoView(items.currentIndex ?? 0), [items])
+	useLayoutEffect(() => scrollIntoView(currentIndex ?? 0), [items, currentIndex])
 
 	const onColumnClick = (i: number) =>  {
 		if (columns[i].isSortable) {
@@ -221,22 +223,17 @@ export const VirtualTable = ({
 	const end = () => setCurrentIndex(items.count - 1)
 	const pos1 = () => setCurrentIndex(0)
 	const pageDown = () =>
-	setCurrentIndex((items.currentIndex ?? 0) < items.count - itemsPerPage + 1 
-		? (items.currentIndex ?? 0) + itemsPerPage - 1
+	setCurrentIndex((currentIndex ?? 0) < items.count - itemsPerPage + 1 
+		? (currentIndex ?? 0) + itemsPerPage - 1
 		: items.count - 1)
-	const pageUp = () => setCurrentIndex(items.currentIndex ?? 0 > itemsPerPage - 1 ? (items.currentIndex ?? 0) - itemsPerPage + 1: 0)	
-	const upOne = () => setCurrentIndex((items.currentIndex ?? 0) - 1)
-	const downOne = () => setCurrentIndex((items.currentIndex ?? 0) + 1)
+	const pageUp = () => setCurrentIndex(currentIndex ?? 0 > itemsPerPage - 1 ? (currentIndex ?? 0) - itemsPerPage + 1: 0)	
+	const upOne = () => setCurrentIndex((currentIndex ?? 0) - 1)
+	const downOne = () => setCurrentIndex((currentIndex ?? 0) + 1)
 
 	const setCurrentIndex = (index?: number) => {
 		const i = validateCurrentIndex(items, index)
-		if (i != items.currentIndex) {
-			onItemsChanged({
-				count: items.count,
-				getItems: items.getItems,
-				currentIndex: i
-			})
-		}
+		if (i != currentIndex) 
+			onCurrentIndexChanged(i)
 	}
 
 	const scrollIntoView = (index: number) => {
@@ -270,7 +267,7 @@ export const VirtualTable = ({
 
     const jsxReturner = (item: VirtualTableItem, index: number) => (
 		<tr key={index} 
-			className={`${index == items.currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''} ${item.isSelected ? "tableItemReactIsSelected" : ''}`}> 
+			className={`${index == currentIndex ? styles.isCurrent : ''} ${item.isSelected ? styles.isSelected : ''} ${item.isSelected ? "tableItemReactIsSelected" : ''}`}> 
 			{itemRenderer(item)}
 		</tr> 
 	)

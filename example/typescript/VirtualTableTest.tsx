@@ -30,6 +30,7 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
 
     const [focused, setFocused] = useState(false)
     const [items, setItems ] = useState(setVirtualTableItems({count: 0, getItems: async (s, e) =>[] }) as VirtualTableItems)
+    const [currentIndex, setCurrentIndex ] = useState(0)
 
     const tableItems = useRef([] as VirtualTableItem[])
 
@@ -51,12 +52,14 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
 
     const onChange = () => {
         tableItems.current = Array.from(Array(20).keys()).map(index => getItem(index))
-        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, currentIndex: 18}))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItems}))
+        setCurrentIndex(18)
     }
     
     const onChangeArray = () => {
         tableItems.current = Array.from(Array(60).keys()).map(index => getItem(index))
-        setItems(setVirtualTableItems({count: tableItems.current.length, getItems, currentIndex: 45}))
+        setItems(setVirtualTableItems({count: tableItems.current.length, getItems}))
+        setCurrentIndex(45)
     }
     
     const itemRenderer = (item: VirtualTableItem) => {
@@ -90,6 +93,8 @@ export const VirtualTableTest = ({theme}: VirtualTableTestProps) => {
                     items={items}
                     onItemsChanged ={setItems}
                     itemRenderer={itemRenderer}
+                    currentIndex={currentIndex}
+                    onCurrentIndexChanged={setCurrentIndex}
                     theme={theme}
                     focused={focused}
                     onFocused={onFocused} />
